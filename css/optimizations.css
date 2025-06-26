@@ -1,0 +1,222 @@
+/* Otimizações adicionais para performance */
+
+/* Lazy loading placeholder */
+.lazy {
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.lazy.loaded {
+    opacity: 1;
+}
+
+/* Preload critical resources */
+.preload-critical {
+    font-display: swap;
+}
+
+/* Optimize images */
+img {
+    max-width: 100%;
+    height: auto;
+    loading: lazy;
+}
+
+/* Critical above-the-fold styles */
+.hero {
+    contain: layout style paint;
+}
+
+/* Reduce layout shifts */
+.product-image {
+    aspect-ratio: 16/9;
+    object-fit: cover;
+}
+
+/* Performance optimizations for animations */
+.fade-in {
+    will-change: transform, opacity;
+}
+
+.card:hover {
+    will-change: transform;
+}
+
+/* Optimize scrolling performance */
+.header {
+    will-change: transform;
+    contain: layout style paint;
+}
+
+/* Reduce paint complexity */
+.nav-link:hover,
+.cta-button:hover,
+.submit-btn:hover {
+    contain: layout style paint;
+}
+
+/* Optimize for mobile performance */
+@media (max-width: 768px) {
+    .hero {
+        background-attachment: scroll; /* Better mobile performance */
+    }
+    
+    .card:hover {
+        transform: none; /* Disable hover effects on mobile */
+    }
+    
+    .nav-menu {
+        contain: layout style paint;
+    }
+}
+
+/* Print styles */
+@media print {
+    .header,
+    .whatsapp-btn,
+    .cta-button,
+    .submit-btn {
+        display: none;
+    }
+    
+    .section {
+        page-break-inside: avoid;
+    }
+    
+    .card {
+        break-inside: avoid;
+    }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    :root {
+        --primary-color: #000080;
+        --secondary-color: #ff6600;
+        --text-dark: #000000;
+        --text-light: #333333;
+    }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+    
+    .fade-in {
+        animation: none;
+    }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --text-dark: #f9fafb;
+        --text-light: #d1d5db;
+        --bg-light: #1f2937;
+        --white: #111827;
+    }
+    
+    .card {
+        background: #1f2937;
+        border-color: #374151;
+    }
+    
+    .form-input {
+        background: #374151;
+        border-color: #4b5563;
+        color: #f9fafb;
+    }
+}
+
+/* Focus management for accessibility */
+.skip-link {
+    position: absolute;
+    top: -40px;
+    left: 6px;
+    background: var(--primary-color);
+    color: var(--white);
+    padding: 8px;
+    text-decoration: none;
+    border-radius: 4px;
+    z-index: 10000;
+}
+
+.skip-link:focus {
+    top: 6px;
+}
+
+/* Enhanced focus indicators */
+*:focus {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+}
+
+.nav-link:focus,
+.cta-button:focus,
+.submit-btn:focus {
+    outline: 3px solid var(--secondary-color);
+    outline-offset: 2px;
+}
+
+/* Loading states */
+.loading {
+    position: relative;
+    overflow: hidden;
+}
+
+.loading::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.4),
+        transparent
+    );
+    animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+    0% {
+        left: -100%;
+    }
+    100% {
+        left: 100%;
+    }
+}
+
+/* Error states */
+.error {
+    border-color: #ef4444 !important;
+    background-color: #fef2f2;
+}
+
+.error-message {
+    color: #dc2626;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+}
+
+/* Success states */
+.success {
+    border-color: #10b981 !important;
+    background-color: #f0fdf4;
+}
+
+.success-message {
+    color: #059669;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+}
+
