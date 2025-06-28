@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }} | Blog Silk Machine</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/optimizations.css">
+    <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
+</head>
+<body>
+    <!-- Header (igual ao do index.html) -->
+    <header class="header" role="banner">
+        <nav class="nav-container">
+            <a href="/" class="logo">Silk Machine</a>
+            <ul class="nav-menu">
+                <li><a href="/" class="nav-link">Início</a></li>
+                <li><a href="/" class="nav-link">Produtos</a></li>
+                <li><a href="/" class="nav-link">Vantagens</a></li>
+                <li><a href="/" class="nav-link">Depoimentos</a></li>
+                <li><a href="/blog/" class="nav-link">Blog</a></li> <!-- Novo link para o blog -->
+                <li><a href="/" class="nav-link">Contato</a></li>
+            </ul>
+            <button class="mobile-menu-btn">☰</button>
+        </nav>
+    </header>
+
+    <!-- Main Content for Post -->
+    <main id="main-content" role="main" class="section">
+        <div class="container">
+            <article>
+                <h1 class="section-title" style="margin-bottom: 1rem;">{{ title }}</h1>
+                <p class="section-subtitle" style="margin-bottom: 2rem;">
+                    Por {{ author }} em {{ date | date: "%d/%m/%Y" }}
+                    {% if tags %}
+                        {% for tag in tags %}
+                            <span style="background-color: #e0e7ff; color: #3b82f6; padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.8em; margin-left: 5px;">{{ tag }}</span>
+                        {% endfor %}
+                    {% endif %}
+                </p>
+                
+                <div class="post-content">
+                    {{ content | safe }}
+                </div>
+            </article>
+            <p style="margin-top: 3rem; text-align: center;"><a href="/blog/" class="cta-button" style="background-color: #6b7280;">← Voltar para o Blog</a></p>
+        </div>
+    </main>
+
+    <!-- Footer (igual ao do index.html) -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Silk Machine</h3>
+                    <p>Especialistas em máquinas serigráficas de alta qualidade. Transformando ideias em realidade através da tecnologia e inovação.</p>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Produtos</h3>
+                    <p><a href="/">Máquina K3-350</a></p>
+                    <p><a href="/">Sistema Cilíndrico</a></p>
+                    <p><a href="/">Sistema Plano</a></p>
+                    <p><a href="/">Especificações</a></p>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Suporte</h3>
+                    <p><a href="/">Contato</a></p>
+                    <p><a href="/">Suporte Técnico</a></p>
+                    <p><a href="/">Treinamento</a></p>
+                    <p><a href="/">Garantia</a></p>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Conecte-se</h3>
+                    <p><a href="https://wa.me/5544999217537" target="_blank">WhatsApp</a></p>
+                    <p><a href="https://silkmachine.com.br" target="_blank">Website</a></p>
+                    <p><a href="mailto:contato@silkmachine.com.br">Email</a></p>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2024 Silk Machine. Todos os direitos reservados. | Desenvolvido com tecnologia moderna para máxima performance.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- WhatsApp Button -->
+    <a href="https://wa.me/5544999217537" class="whatsapp-btn" target="_blank" title="Fale conosco no WhatsApp">
+        💬
+    </a>
+
+    <!-- JavaScript -->
+    <script src="/js/script.js"></script>
+    
+    <!-- Google Analytics (substitua pelo seu ID ) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag( ){dataLayer.push(arguments);}
+        gtag("js", new Date());
+        gtag("config", "GA_MEASUREMENT_ID");
+    </script>
+</body>
+</html>
