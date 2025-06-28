@@ -1,0 +1,29 @@
+backend:
+  name: git-gateway
+  branch: main # ou master, dependendo do nome da sua branch principal no GitHub
+
+publish_mode: editorial_workflow # Opcional: permite rascunhos e revisão antes de publicar
+media_folder: "src/images/uploads" # Onde as imagens enviadas pelo CMS serão salvas
+public_folder: "/images/uploads" # Caminho público para as imagens
+
+collections:
+  - name: "posts" # Nome da coleção (posts do blog )
+    label: "Posts do Blog" # Título visível no CMS
+    folder: "src/posts" # Pasta onde os posts serão salvos
+    create: true # Permite criar novos posts
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}" # Formato do nome do arquivo (ex: 2025-06-26-meu-post.md)
+    fields: # Campos para cada post
+      - {label: "Título", name: "title", widget: "string", required: true}
+      - {label: "Autor", name: "author", widget: "string", default: "Equipe Silk Machine"}
+      - {label: "Data", name: "date", widget: "datetime", required: true, format: "YYYY-MM-DD", date_format: "YYYY-MM-DD"}
+      - {label: "Tags", name: "tags", widget: "list", default: ["blog"], required: false}
+      - {label: "Corpo do Post", name: "body", widget: "markdown", required: true}
+  
+  - name: "pages" # Exemplo de coleção para páginas estáticas (Sobre, Contato, etc.)
+    label: "Páginas"
+    folder: "src/pages" # Pasta onde as páginas serão salvas
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - {label: "Título", name: "title", widget: "string", required: true}
+      - {label: "Corpo da Página", name: "body", widget: "markdown", required: true}
