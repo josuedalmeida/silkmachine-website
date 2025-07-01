@@ -7,8 +7,8 @@ module.exports = function(eleventyConfig) {
     // Configura a pasta de entrada (source) e a pasta de saída (output)
     return {
         dir: {
-            input: "src",
-            output: "_site" // Esta será a pasta que você fará upload para o cPanel/aapanel
+            input: "src", // Isso é importante!
+            output: "_site"
         }
     };
 };
