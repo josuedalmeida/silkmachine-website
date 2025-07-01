@@ -10,7 +10,6 @@ module.exports = function(eleventyConfig) {
         dir: {
             input: "src",
             includes: "_includes", // Mantenha esta linha
-            // layouts: "_includes/layouts", // REMOVA OU COMENTE ESTA LINHA
             data: "_data",
             output: "_site"
         },

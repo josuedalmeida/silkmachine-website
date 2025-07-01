@@ -3,7 +3,7 @@ title: Meu Primeiro Post no Blog da Silk Machine
 author: Equipe Silk Machine
 date: 2025-06-26
 tags: [blog, serigrafia,iniciantes, blog, renda extra, K3-350, empreendedorismo, silk machine]
-layout: layouts/post.njk # Certifique-se que está assim!
+layout: _includes/layouts/post.njk # Certifique-se que está assim!
 ---
 
 # Bem-vindo ao Blog da Silk Machine!

@@ -1,7 +1,7 @@
 {
   "name": "silkmachine-site",
   "version": "1.0.0",
-  "description": "Site estático da SilkMachine com Eleventy",
+  "description": "Site estático da Silk Machine com Eleventy",
   "main": "index.js",
   "scripts": {
     "start": "npx @11ty/eleventy --serve",
@@ -11,8 +11,9 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@11ty/eleventy": "^2.0.1"
+    "@11ty/eleventy": "2.0.1" // Remova o ^ para fixar a versão
   }
 }
+
 
   
