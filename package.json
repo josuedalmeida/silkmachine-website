@@ -2,7 +2,7 @@
   "name": "silkmachine-site",
   "version": "1.0.0",
   "description": "Site estático da SilkMachine com Eleventy",
-  "main": "index.html",
+  "main": "index.js",
   "scripts": {
     "start": "npx @11ty/eleventy --serve",
     "build": "npx @11ty/eleventy"
