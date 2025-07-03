@@ -1,0 +1,38 @@
+<div class="video-card" data-category="{{ video.data.category }}" data-tags="{{ video.data.tags | join(',') }}">
+    <div class="video-thumbnail">
+        {% if video.data.platform == "youtube" %}
+            <img src="https://img.youtube.com/vi/{{ video.data.video_id }}/hqdefault.jpg" 
+                 alt="{{ video.data.title }}" 
+                 loading="lazy">
+        {% endif %}
+        <div class="play-overlay">
+            <div class="play-button">▶</div>
+        </div>
+        {% if video.data.duration %}
+        <div class="video-duration">
+            {{ (video.data.duration / 60) | round }}:{{ (video.data.duration % 60) | string | padStart(2, "0") }}
+        </div>
+        {% endif %}
+        {% if video.data.featured %}
+        <div class="featured-badge">Destaque</div>
+        {% endif %}
+    </div>
+    <div class="video-info">
+        <h4 class="video-title">{{ video.data.title }}</h4>
+        <p class="video-description">{{ video.data.description | truncate(100) }}</p>
+        <div class="video-meta">
+            <span class="video-category">{{ video.data.category | replace("-", " ") | title }}</span>
+            <span class="video-date">{{ video.data.date | date("DD/MM/YYYY") }}</span>
+        </div>
+        <div class="video-tags">
+            {% for tag in video.data.tags | slice(0, 3) %}
+                <span class="tag">#{{ tag }}</span>
+            {% endfor %}
+        </div>
+    </div>
+    <button class="watch-btn" data-video-url="{{ video.data.video_url }}" data-video-title="{{ video.data.title }}">
+        <span class="btn-icon">▶</span>
+        Assistir
+    </button>
+</div>
+

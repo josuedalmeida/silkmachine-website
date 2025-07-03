@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vídeos - Silk Machine | Silk Machine</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/optimizations.css">
+    <link rel="stylesheet" href="/css/videos.css">
+    <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
+</head>
+<body>
+    <!-- Header (igual ao do index.html) -->
+    <header class="header" role="banner">
+        <nav class="nav-container">
+            <a href="/" class="logo">Silk Machine</a>
+            <ul class="nav-menu">
+                <li><a href="/" class="nav-link">Início</a></li>
+                <li><a href="/" class="nav-link">Produtos</a></li>
+                <li><a href="/" class="nav-link">Vantagens</a></li>
+                <li><a href="/" class="nav-link">Depoimentos</a></li>
+                <li><a href="/videos/" class="nav-link">Vídeos</a></li>
+                <li><a href="/blog/" class="nav-link">Blog</a></li> <!-- Novo link para o blog -->
+                <li><a href="/" class="nav-link">Contato</a></li>
+            </ul>
+            <button class="mobile-menu-btn">☰</button>
+        </nav>
+    </header>
+
+    
+<div class="videos-page">
+    <!-- Header da página -->
+    <div class="videos-header">
+        <div class="container">
+            <h1 class="videos-title">Central de Vídeos</h1>
+            <p class="videos-subtitle">Descubra todo o potencial da K3-350 através dos nossos vídeos</p>
+            
+            <!-- Filtros e busca -->
+            <div class="videos-controls">
+                <div class="search-box">
+                    <input type="text" id="video-search" placeholder="Buscar vídeos..." />
+                    <i class="search-icon">🔍</i>
+                </div>
+                
+                <div class="category-filters">
+                    <button class="filter-btn active" data-category="all">Todos</button>
+                    <button class="filter-btn" data-category="demonstracoes">Demonstrações</button>
+                    <button class="filter-btn" data-category="depoimentos">Depoimentos</button>
+                    <button class="filter-btn" data-category="treinamentos">Treinamentos</button>
+                    <button class="filter-btn" data-category="dicas-negocio">Dicas de Negócio</button>
+                    <button class="filter-btn" data-category="tutoriais">Tutoriais</button>
+                    <button class="filter-btn" data-category="novidades">Novidades</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Vídeos em destaque -->
+    <section class="featured-videos">
+        <div class="container">
+            <h2 class="section-title">Vídeos em Destaque</h2>
+            <div class="featured-carousel">
+                
+                
+            </div>
+        </div>
+    </section>
+
+    <!-- Seções por categoria -->
+    <section class="category-sections">
+        <div class="container">
+            
+            <!-- Demonstrações -->
+            <div class="category-section" data-category="demonstracoes">
+                <h2 class="section-title">
+                    <span class="category-icon">🎬</span>
+                    Demonstrações
+                </h2>
+                <div class="videos-carousel">
+                    
+                    
+                </div>
+            </div>
+
+            <!-- Depoimentos -->
+            <div class="category-section" data-category="depoimentos">
+                <h2 class="section-title">
+                    <span class="category-icon">💬</span>
+                    Depoimentos
+                </h2>
+                <div class="videos-carousel">
+                    
+                    
+                </div>
+            </div>
+
+            <!-- Treinamentos -->
+            <div class="category-section" data-category="treinamentos">
+                <h2 class="section-title">
+                    <span class="category-icon">🎓</span>
+                    Treinamentos
+                </h2>
+                <div class="videos-carousel">
+                    
+                    
+                </div>
+            </div>
+
+            <!-- Dicas de Negócio -->
+            <div class="category-section" data-category="dicas-negocio">
+                <h2 class="section-title">
+                    <span class="category-icon">💡</span>
+                    Dicas de Negócio
+                </h2>
+                <div class="videos-carousel">
+                    
+                    
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Modal do player de vídeo -->
+    <div id="video-modal" class="video-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-video-title"></h3>
+                <button class="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="video-player"></div>
+            </div>
+        </div>
+        <div class="modal-overlay"></div>
+    </div>
+
+    <!-- Links para redes sociais -->
+    <section class="social-links">
+        <div class="container">
+            <h2 class="section-title">Siga-nos nas Redes Sociais</h2>
+            <div class="social-grid">
+                <a href="https://www.youtube.com/@silkmachine/videos" target="_blank" class="social-card youtube">
+                    <div class="social-icon">📺</div>
+                    <h3>YouTube</h3>
+                    <p>Vídeos completos e tutoriais detalhados</p>
+                </a>
+                <a href="https://www.instagram.com/silkmachine/" target="_blank" class="social-card instagram">
+                    <div class="social-icon">📸</div>
+                    <h3>Instagram</h3>
+                    <p>Fotos e vídeos do dia a dia</p>
+                </a>
+                <a href="https://www.tiktok.com/@silkmachine" target="_blank" class="social-card tiktok">
+                    <div class="social-icon">🎵</div>
+                    <h3>TikTok</h3>
+                    <p>Vídeos rápidos e criativos</p>
+                </a>
+                <a href="https://www.facebook.com/silkmachine" target="_blank" class="social-card facebook">
+                    <div class="social-icon">👥</div>
+                    <h3>Facebook</h3>
+                    <p>Comunidade e atualizações</p>
+                </a>
+            </div>
+        </div>
+    </section>
+</div>
+
+
+
+    <!-- Footer (igual ao do index.html) -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Silk Machine</h3>
+                    <p>Especialistas em máquinas serigráficas de alta qualidade. Transformando ideias em realidade através da tecnologia e inovação.</p>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Produtos</h3>
+                    <p><a href="/">Máquina K3-350</a></p>
+                    <p><a href="/">Sistema Cilíndrico</a></p>
+                    <p><a href="/">Sistema Plano</a></p>
+                    <p><a href="/">Especificações</a></p>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Suporte</h3>
+                    <p><a href="/">Contato</a></p>
+                    <p><a href="/">Suporte Técnico</a></p>
+                    <p><a href="/">Treinamento</a></p>
+                    <p><a href="/">Garantia</a></p>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Conecte-se</h3>
+                    <p><a href="https://wa.me/5544999217537" target="_blank">WhatsApp</a></p>
+                    <p><a href="https://silkmachine.com.br" target="_blank">Website</a></p>
+                    <p><a href="mailto:contato@silkmachine.com.br">Email</a></p>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2024 Silk Machine. Todos os direitos reservados. | Desenvolvido com tecnologia moderna para máxima performance.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- WhatsApp Button -->
+    <a href="https://wa.me/5544999217537" class="whatsapp-btn" target="_blank" title="Fale conosco no WhatsApp">
+        💬
+    </a>
+
+    <!-- JavaScript -->
+    <script src="/js/script.js"></script>
+    <script src="/js/videos.js"></script>
+    
+    <!-- Google Analytics (substitua pelo seu ID ) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag( ){dataLayer.push(arguments);}
+        gtag("js", new Date());
+        gtag("config", "GA_MEASUREMENT_ID");
+    </script>
+</body>
+</html>
