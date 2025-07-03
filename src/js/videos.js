@@ -208,12 +208,25 @@ function openVideoModal(videoUrl, videoTitle) {
     const videoId = window.videoUtils.extractYouTubeId(videoUrl);
     
     if (videoId) {
-        const embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`;
+        // Parâmetros do YouTube para mostrar apenas play e compartilhar
+        const embedUrl = `https://www.youtube.com/embed/${videoId}?` +
+            `autoplay=1` +           // Reproduzir automaticamente
+            `&rel=0` +               // Não mostrar vídeos relacionados
+            `&controls=1` +          // Mostrar controles básicos
+            `&showinfo=0` +          // Não mostrar informações do vídeo
+            `&modestbranding=1` +    // Remover logo do YouTube
+            `&iv_load_policy=3` +    // Não mostrar anotações
+            `&cc_load_policy=0` +    // Não carregar legendas automaticamente
+            `&fs=1` +                // Permitir tela cheia
+            `&disablekb=0` +         // Manter controles de teclado
+            `&playsinline=1` +       // Reproduzir inline no mobile
+            `&enablejsapi=1`;        // Habilitar API JavaScript
+            
         playerContainer.innerHTML = `
             <iframe 
                 src="${embedUrl}" 
                 frameborder="0" 
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
                 allowfullscreen>
             </iframe>
         `;
