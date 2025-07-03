@@ -208,27 +208,35 @@ function openVideoModal(videoUrl, videoTitle) {
     const videoId = window.videoUtils.extractYouTubeId(videoUrl);
     
     if (videoId) {
-        // Parâmetros do YouTube para mostrar apenas play e compartilhar
+        // Parâmetros mais restritivos para remover controles desnecessários
         const embedUrl = `https://www.youtube.com/embed/${videoId}?` +
             `autoplay=1` +           // Reproduzir automaticamente
+            `&controls=0` +          // REMOVER TODOS OS CONTROLES
             `&rel=0` +               // Não mostrar vídeos relacionados
-            `&controls=1` +          // Mostrar controles básicos
             `&showinfo=0` +          // Não mostrar informações do vídeo
             `&modestbranding=1` +    // Remover logo do YouTube
             `&iv_load_policy=3` +    // Não mostrar anotações
             `&cc_load_policy=0` +    // Não carregar legendas automaticamente
-            `&fs=1` +                // Permitir tela cheia
-            `&disablekb=0` +         // Manter controles de teclado
+            `&fs=0` +                // DESABILITAR tela cheia
+            `&disablekb=1` +         // Desabilitar controles de teclado
             `&playsinline=1` +       // Reproduzir inline no mobile
-            `&enablejsapi=1`;        // Habilitar API JavaScript
+            `&loop=1` +              // Loop do vídeo
+            `&playlist=${videoId}` + // Necessário para loop funcionar
+            `&mute=0` +              // Não silenciar (usuário pode controlar)
+            `&enablejsapi=0`;        // Desabilitar API JavaScript
             
         playerContainer.innerHTML = `
             <iframe 
                 src="${embedUrl}" 
                 frameborder="0" 
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-                allowfullscreen>
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                style="pointer-events: auto;">
             </iframe>
+            <div class="custom-controls">
+                <button class="custom-play-btn" onclick="toggleVideo()">⏸️</button>
+                <button class="custom-share-btn" onclick="shareVideo('${videoUrl}')">🔗</button>
+                <a href="${videoUrl}" target="_blank" class="custom-youtube-btn">📺 Ver no YouTube</a>
+            </div>
         `;
     } else {
         playerContainer.innerHTML = `
@@ -243,5 +251,46 @@ function openVideoModal(videoUrl, videoTitle) {
     
     modal.classList.add('active');
     document.body.style.overflow = 'hidden';
+}
+
+
+
+// Funções para controles customizados
+function toggleVideo() {
+    const iframe = document.querySelector('#video-player iframe');
+    const playBtn = document.querySelector('.custom-play-btn');
+    
+    if (iframe && iframe.contentWindow) {
+        // Como não temos acesso direto ao player, vamos recarregar para pausar/play
+        if (playBtn.textContent === '⏸️') {
+            // Pausar: remover autoplay
+            const currentSrc = iframe.src;
+            iframe.src = currentSrc.replace('autoplay=1', 'autoplay=0');
+            playBtn.textContent = '▶️';
+        } else {
+            // Play: adicionar autoplay
+            const currentSrc = iframe.src;
+            iframe.src = currentSrc.replace('autoplay=0', 'autoplay=1');
+            playBtn.textContent = '⏸️';
+        }
+    }
+}
+
+function shareVideo(videoUrl) {
+    if (navigator.share) {
+        navigator.share({
+            title: 'Vídeo da Silk Machine',
+            text: 'Confira este vídeo da máquina K3-350!',
+            url: videoUrl
+        });
+    } else {
+        // Fallback: copiar para clipboard
+        navigator.clipboard.writeText(videoUrl).then(() => {
+            alert('Link copiado para a área de transferência!');
+        }).catch(() => {
+            // Fallback final: mostrar o link
+            prompt('Copie o link:', videoUrl);
+        });
+    }
 }
 
