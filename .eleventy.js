@@ -10,7 +10,7 @@ module.exports = function(eleventyConfig) {
         dir: {
             input: "src",
             includes: "_includes", // Mantenha esta linha
-            layouts: "_includes/layouts", // REINTRODUZA ESTA LINHA!
+            // REMOVA ESTA LINHA: layouts: "_includes/layouts", 
             data: "_data",
             output: "_site"
         },
@@ -20,4 +20,3 @@ module.exports = function(eleventyConfig) {
         dataTemplateEngine: "njk"
     };
 };
-
