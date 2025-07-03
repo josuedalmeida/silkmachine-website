@@ -1,9 +1,14 @@
 ---
-title: Meu Primeiro Post no Blog da Silk Machine
+title: Meu Primeiro Post no Blog da Silk Machine maquinas
 author: Equipe Silk Machine
 date: 2025-06-28
-tags: [blog, renda extra, K3-350, empreendedorismo, silk machine]
-layout: layouts/post.njk # Volte para este caminho mais simples
+tags:
+  - blog
+  - renda extra
+  - K3-350
+  - empreendedorismo
+  - silk machine
+layout: layouts/post.njk
 ---
 
 
