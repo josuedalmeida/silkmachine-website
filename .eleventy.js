@@ -59,6 +59,11 @@ module.exports = function(eleventyConfig) {
         return str.replace(/<[^>]*>/g, '');
     });
 
+    // Adiciona collection para vídeos
+    eleventyConfig.addCollection("videos", function(collectionApi) {
+        return collectionApi.getFilteredByGlob("src/videos/*.md");
+    });
+
     // Configura a pasta de entrada (source) e a pasta de saída (output)
     return {
         dir: {

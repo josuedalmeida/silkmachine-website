@@ -1,7 +1,8 @@
 <div class="video-card" data-category="{{ video.data.category }}" data-tags="{{ video.data.tags | join(',') }}">
     <div class="video-thumbnail">
         {% if video.data.platform == "youtube" %}
-            <img src="https://img.youtube.com/vi/{{ video.data.video_id }}/hqdefault.jpg" 
+            {% set videoId = video.data.video_url | replace("https://www.youtube.com/shorts/", "") | replace("https://www.youtube.com/watch?v=", "") | replace("https://youtu.be/", "") | replace("?.*", "") %}
+            <img src="https://img.youtube.com/vi/{{ videoId }}/hqdefault.jpg" 
                  alt="{{ video.data.title }}" 
                  loading="lazy">
         {% endif %}
@@ -35,4 +36,3 @@
         Assistir
     </button>
 </div>
-

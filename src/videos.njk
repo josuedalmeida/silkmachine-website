@@ -41,9 +41,10 @@ permalink: /videos/index.html
                 <div class="featured-video-card" data-category="{{ video.data.category }}">
                     <div class="video-thumbnail">
                         {% if video.data.platform == "youtube" %}
-                            <img src="https://img.youtube.com/vi/{{ video.data.video_id }}/maxresdefault.jpg" 
+                            {% set videoId = video.data.video_url | replace("https://www.youtube.com/shorts/", "") | replace("https://www.youtube.com/watch?v=", "") | replace("https://youtu.be/", "") | replace("?.*", "") %}
+                            <img src="https://img.youtube.com/vi/{{ videoId }}/maxresdefault.jpg" 
                                  alt="{{ video.data.title }}" 
-                                 onerror="this.src='https://img.youtube.com/vi/{{ video.data.video_id }}/hqdefault.jpg'">
+                                 onerror="this.src='https://img.youtube.com/vi/{{ videoId }}/hqdefault.jpg'">
                         {% endif %}
                         <div class="play-overlay">
                             <div class="play-button">▶</div>
