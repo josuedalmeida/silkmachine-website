@@ -1,6 +1,6 @@
 ---
-title: "Meu Primeiro Post no Blog da Silk Machine "
-author: Equipe Silk Machine
+title: "Renda Extra em Casa com a K3-350: Seu Caminho para a Independência Financeira"
+author: Equipe Silk Machine - Josué D´Almeida
 date: 2025-06-28
 tags:
   - blog
