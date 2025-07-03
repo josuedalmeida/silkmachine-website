@@ -12,7 +12,7 @@
   "license": "ISC",
   "devDependencies": {
     "@11ty/eleventy": "2.0.1"
-	"luxon": "^3.4.4" // Adicione esta linha com a versão que desejar
+	"luxon": "^3.4.4" 
   }
 }
 
