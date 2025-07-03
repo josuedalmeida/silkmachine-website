@@ -18,7 +18,7 @@ permalink: /blog/index.html
                     <h3>{{ post.data.title }}</h3>
                 </a>
                 <p style="font-size: 0.9em; color: var(--text-light); margin-bottom: 1rem;">
-                    Por {{ post.data.author }} em {{ post.data.date | date: "%d/%m/%Y" }}
+                    Por {{ post.data.author }} em {{ post.data.date | dateFormat("dd/MM/yyyy") }}
                 </p>
                 <p>{{ post.data.description or post.templateContent | striptags | truncate(150) }}</p>
                 <p style="margin-top: 1rem;"><a href="{{ post.url }}" class="cta-button" style="padding: 0.5rem 1rem; font-size: 0.9em;">Leia Mais</a></p>

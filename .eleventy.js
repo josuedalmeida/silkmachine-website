@@ -4,6 +4,13 @@ module.exports = function(eleventyConfig) {
     eleventyConfig.addPassthroughCopy("src/js");
     eleventyConfig.addPassthroughCopy("src/images");
     eleventyConfig.addPassthroughCopy("src/admin");
+	
+	// Adiciona um filtro de data personalizado
+    eleventyConfig.addFilter("dateFormat", function(dateObj, format) {
+        const luxon = require('luxon'); // Certifique-se de ter luxon instalado (npm install luxon)
+        return luxon.DateTime.fromJSDate(dateObj).toFormat(format);
+    });
+
 
     // Configura a pasta de entrada (source) e a pasta de saída (output)
     return {
