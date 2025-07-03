@@ -208,7 +208,7 @@ function openVideoModal(videoUrl, videoTitle) {
     const videoId = window.videoUtils.extractYouTubeId(videoUrl);
     
     if (videoId) {
-        // Parâmetros para manter controles básicos e remover elementos desnecessários
+        // Parâmetros mais restritivos para remover controles desnecessários
         const embedUrl = `https://www.youtube.com/embed/${videoId}?` +
             `autoplay=1` +           // Reproduzir automaticamente
             `&controls=1` +          // ✅ MANTER controles básicos (play/pause, volume, progresso)
@@ -219,7 +219,10 @@ function openVideoModal(videoUrl, videoTitle) {
             `&cc_load_policy=0` +    // ❌ REMOVER legendas automáticas
             `&fs=1` +                // ✅ MANTER botão tela cheia
             `&disablekb=0` +         // ✅ MANTER controles de teclado
-            `&playsinline=1`;        // Reproduzir inline no mobile
+            `&playsinline=1` +       // Reproduzir inline no mobile
+            `&color=white` +         // Cor da barra de progresso
+            `&theme=dark` +          // Tema escuro
+            `&autohide=1`;           // Auto-ocultar controles
             
         playerContainer.innerHTML = `
             <iframe 
