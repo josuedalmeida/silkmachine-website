@@ -12,10 +12,15 @@ collections:
     folder: "src/posts" # Pasta onde os posts serão salvos
     create: true # Permite criar novos posts
     slug: "{{year}}-{{month}}-{{day}}-{{slug}}" # Formato do nome do arquivo (ex: 2025-06-26-meu-post.md)
-    fields: # Campos para cada post
+fields: # Campos para cada post
       - {label: "Título", name: "title", widget: "string", required: true}
       - {label: "Autor", name: "author", widget: "string", default: "Equipe Silk Machine"}
-      - {label: "Data", name: "date", widget: "datetime", required: true, format: "YYYY-MM-DD", date_format: "YYYY-MM-DD"}
+      - label: "Data" # Propriedade 'label'
+        name: "date"   # Propriedade 'name'
+        widget: "datetime" # Propriedade 'widget'
+        required: true # Propriedade 'required'
+        format: "YYYY-MM-DD" # Propriedade 'format' com indentação
+        date_format: "YYYY-MM-DD" # Propriedade 'date_format' com indentação
       - {label: "Tags", name: "tags", widget: "list", default: ["blog"], required: false}
       - {label: "Corpo do Post", name: "body", widget: "markdown", required: true}
   
