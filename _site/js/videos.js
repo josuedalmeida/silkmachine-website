@@ -69,15 +69,20 @@ function createVideoCard(video) {
     
     // Extrair ID do YouTube para thumbnail
     const videoId = window.videoUtils.extractYouTubeId(video.url);
-    const thumbnailUrl = videoId ? 
-        `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg` : 
-        '/images/video-placeholder.jpg';
+    let thumbnailUrl = '/images/video-placeholder.jpg'; // Fallback padrão
+    
+    if (videoId) {
+        // Tentar diferentes qualidades de thumbnail
+        thumbnailUrl = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+    }
     
     card.innerHTML = `
         <div class="video-thumbnail">
             <img src="${thumbnailUrl}" 
                  alt="${video.title}"
-                 onerror="this.src='https://img.youtube.com/vi/${videoId}/hqdefault.jpg'">
+                 onerror="this.onerror=null; this.src='https://img.youtube.com/vi/${videoId}/default.jpg';"
+                 onload="this.style.opacity='1';"
+                 style="opacity: 0; transition: opacity 0.3s ease;">
             <div class="play-overlay">
                 <div class="play-button">▶</div>
             </div>
@@ -291,4 +296,50 @@ if (window.innerWidth <= 768) {
         document.body.appendChild(menuButton);
     }
 }
+
+
+// ===== FUNÇÕES DO BANNER GERENCIÁVEL =====
+function closeBanner() {
+    const banner = document.getElementById('banner-section');
+    if (banner) {
+        banner.style.animation = 'slideUp 0.3s ease-out forwards';
+        setTimeout(() => {
+            banner.classList.add('hidden');
+        }, 300);
+        
+        // Salvar no localStorage que o banner foi fechado
+        localStorage.setItem('bannerClosed', 'true');
+    }
+}
+
+// Verificar se o banner deve ser mostrado
+function checkBannerVisibility() {
+    const bannerClosed = localStorage.getItem('bannerClosed');
+    const banner = document.getElementById('banner-section');
+    
+    if (bannerClosed === 'true' && banner) {
+        banner.classList.add('hidden');
+    }
+}
+
+// Adicionar animação de slideUp
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes slideUp {
+        from {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        to {
+            transform: translateY(-100%);
+            opacity: 0;
+        }
+    }
+`;
+document.head.appendChild(style);
+
+// Verificar visibilidade do banner quando a página carregar
+document.addEventListener('DOMContentLoaded', function() {
+    checkBannerVisibility();
+});
 

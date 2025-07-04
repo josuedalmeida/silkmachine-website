@@ -556,3 +556,165 @@
 
 /* Fim dos estilos da página de vídeos */
 
+
+
+/* ===== ÍCONES SVG DAS REDES SOCIAIS ===== */
+.social-links a svg {
+    width: 20px;
+    height: 20px;
+    transition: all 0.3s ease;
+}
+
+.social-youtube:hover {
+    background: #FF0000 !important;
+}
+
+.social-instagram:hover {
+    background: linear-gradient(45deg, #f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%) !important;
+}
+
+.social-tiktok:hover {
+    background: #000000 !important;
+}
+
+.social-facebook:hover {
+    background: #1877F2 !important;
+}
+
+.social-links a:hover svg {
+    color: #ffffff;
+    transform: scale(1.1);
+}
+
+
+/* ===== BANNER GERENCIÁVEL ===== */
+.banner-section {
+    background: linear-gradient(135deg, #ff6b6b, #4ecdc4);
+    margin: -2rem -2rem 2rem -2rem;
+    padding: 1.5rem 2rem;
+    position: relative;
+    overflow: hidden;
+    animation: slideDown 0.5s ease-out;
+}
+
+.banner-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.1);
+    z-index: 1;
+}
+
+.banner-content {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.banner-text h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0 0 0.5rem;
+    color: #ffffff;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.banner-text p {
+    font-size: 1rem;
+    margin: 0;
+    color: #ffffff;
+    opacity: 0.9;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.banner-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.banner-btn {
+    padding: 0.8rem 1.5rem;
+    border-radius: 25px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+.banner-btn.primary {
+    background: #ffffff;
+    color: #ff6b6b;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.banner-btn.primary:hover {
+    background: #f0f0f0;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+.banner-close {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: #ffffff;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.banner-close:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.1);
+}
+
+.banner-section.hidden {
+    display: none;
+}
+
+@keyframes slideDown {
+    from {
+        transform: translateY(-100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Responsividade do Banner */
+@media (max-width: 768px) {
+    .banner-content {
+        flex-direction: column;
+        text-align: center;
+        gap: 1rem;
+    }
+    
+    .banner-text h2 {
+        font-size: 1.2rem;
+    }
+    
+    .banner-text p {
+        font-size: 0.9rem;
+    }
+    
+    .banner-actions {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
