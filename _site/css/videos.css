@@ -238,7 +238,7 @@
 .video-thumbnail {
     position: relative;
     width: 100%;
-    aspect-ratio: 9/16; /* Formato vertical como no exemplo */
+    aspect-ratio: 16/10; /* Mudado de 9/16 para 16/10 (mais compacto) */
     overflow: hidden;
 }
 

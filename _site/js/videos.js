@@ -69,11 +69,11 @@ function createVideoCard(video) {
     
     // Extrair ID do YouTube para thumbnail
     const videoId = window.videoUtils.extractYouTubeId(video.url);
-    let thumbnailUrl = '/images/video-placeholder.jpg'; // Fallback padrão
+    let thumbnailUrl = 'https://via.placeholder.com/480x270/667eea/ffffff?text=Video'; // Fallback padrão
     
     if (videoId) {
-        // Tentar diferentes qualidades de thumbnail
-        thumbnailUrl = `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
+        // Usar thumbnail de qualidade média que sempre funciona
+        thumbnailUrl = `https://img.youtube.com/vi/${videoId}/mqdefault.jpg`;
     }
     
     card.innerHTML = `
@@ -81,8 +81,7 @@ function createVideoCard(video) {
             <img src="${thumbnailUrl}" 
                  alt="${video.title}"
                  onerror="this.onerror=null; this.src='https://img.youtube.com/vi/${videoId}/default.jpg';"
-                 onload="this.style.opacity='1';"
-                 style="opacity: 0; transition: opacity 0.3s ease;">
+                 loading="lazy">
             <div class="play-overlay">
                 <div class="play-button">▶</div>
             </div>
@@ -93,7 +92,7 @@ function createVideoCard(video) {
             <p class="video-description">${video.description}</p>
             <div class="video-meta">
                 <span class="video-category">${getCategoryName(video.category)}</span>
-                <span class="video-duration">${video.duration}</span>
+                <span class="video-duration">${video.duration}s</span>
             </div>
         </div>
     `;
