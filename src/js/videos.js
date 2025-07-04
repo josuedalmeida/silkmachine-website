@@ -1,200 +1,180 @@
-// ===== FUNCIONALIDADES DA PÁGINA DE VÍDEOS =====
+// ===== FUNCIONALIDADES DA PÁGINA DE VÍDEOS - LAYOUT SIDEBAR =====
 
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('Página de vídeos inicializada');
-    
-    // Aguardar carregamento dos dados
-    if (typeof window.videosData !== 'undefined') {
-        initializeVideosPage();
-    } else {
-        // Aguardar um pouco para os dados carregarem
-        setTimeout(() => {
-            if (typeof window.videosData !== 'undefined') {
-                initializeVideosPage();
-            } else {
-                console.error('Dados dos vídeos não encontrados');
-            }
-        }, 100);
-    }
+    initializeVideosPage();
 });
 
 function initializeVideosPage() {
-    console.log('Inicializando página de vídeos com', window.videosData.length, 'vídeos');
-    
-    // Renderizar vídeos em destaque
-    renderFeaturedVideos();
-    
-    // Renderizar vídeos por categoria
-    renderVideosByCategory();
-    
-    // Configurar filtros
-    setupFilters();
-    
-    // Configurar busca
-    setupSearch();
-    
-    // Configurar modal
-    setupVideoModal();
-}
-
-function renderFeaturedVideos() {
-    const featuredContainer = document.querySelector('.featured-carousel');
-    if (!featuredContainer) return;
-    
-    const featuredVideos = window.videosData.filter(video => video.featured);
-    
-    if (featuredVideos.length === 0) {
-        featuredContainer.innerHTML = '<p class="no-videos">Nenhum vídeo em destaque encontrado.</p>';
+    if (!window.videosData) {
+        console.error('Dados dos vídeos não encontrados');
         return;
     }
     
-    featuredContainer.innerHTML = featuredVideos.map(video => createVideoCard(video, true)).join('');
+    renderAllVideos();
+    setupEventListeners();
+    updateVideosCount();
 }
 
-function renderVideosByCategory() {
-    const categories = ['demonstracoes', 'depoimentos', 'treinamentos', 'dicas-negocio', 'tutoriais', 'novidades'];
-    
-    categories.forEach(category => {
-        const categorySection = document.querySelector(`[data-category="${category}"] .videos-carousel`);
-        if (!categorySection) return;
-        
-        const categoryVideos = window.videosData.filter(video => video.category === category);
-        
-        if (categoryVideos.length === 0) {
-            categorySection.innerHTML = '<p class="no-videos">Nenhum vídeo encontrado nesta categoria.</p>';
-            return;
-        }
-        
-        categorySection.innerHTML = categoryVideos.map(video => createVideoCard(video, false)).join('');
-    });
-}
-
-function createVideoCard(video, isFeatured = false) {
-    const thumbnail = window.videoUtils.getYouTubeThumbnail(video.video_url);
-    const duration = video.duration ? window.videoUtils.formatDuration(video.duration) : '';
-    const date = window.videoUtils.formatDate(video.date);
-    const category = window.videoUtils.formatCategory(video.category);
-    const cardClass = isFeatured ? 'featured-video-card' : 'video-card';
-    
-    return `
-        <div class="${cardClass}" data-category="${video.category}" data-tags="${video.tags.join(',')}">
-            <div class="video-thumbnail">
-                <img src="${thumbnail}" alt="${video.title}" loading="lazy">
-                <div class="play-overlay">
-                    <div class="play-button">▶</div>
-                </div>
-                ${duration ? `<div class="video-duration">${duration}</div>` : ''}
-                ${video.featured ? '<div class="featured-badge">Destaque</div>' : ''}
-            </div>
-            <div class="video-info">
-                <h${isFeatured ? '3' : '4'} class="video-title">${video.title}</h${isFeatured ? '3' : '4'}>
-                <p class="video-description">${video.description.substring(0, 100)}${video.description.length > 100 ? '...' : ''}</p>
-                <div class="video-meta">
-                    <span class="video-category">${category}</span>
-                    <span class="video-date">${date}</span>
-                </div>
-                <div class="video-tags">
-                    ${video.tags.slice(0, 3).map(tag => `<span class="tag">#${tag}</span>`).join('')}
-                </div>
-            </div>
-            <button class="watch-btn" data-video-url="${video.video_url}" data-video-title="${video.title}">
-                <span class="btn-icon">▶</span>
-                Assistir
-            </button>
-        </div>
-    `;
-}
-
-function setupFilters() {
-    const filterButtons = document.querySelectorAll('.filter-btn');
-    
-    filterButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            // Remover classe active de todos os botões
-            filterButtons.forEach(btn => btn.classList.remove('active'));
-            
-            // Adicionar classe active ao botão clicado
+function setupEventListeners() {
+    // Navegação da sidebar
+    const navItems = document.querySelectorAll('.nav-item');
+    navItems.forEach(item => {
+        item.addEventListener('click', function() {
+            // Remove active de todos
+            navItems.forEach(nav => nav.classList.remove('active'));
+            // Adiciona active no clicado
             this.classList.add('active');
             
             const category = this.dataset.category;
             filterVideosByCategory(category);
+            updateSectionTitle(category);
         });
     });
+    
+    // Busca de vídeos
+    const searchInput = document.getElementById('video-search');
+    if (searchInput) {
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            searchVideos(searchTerm);
+        });
+    }
+    
+    // Fechar modal com ESC
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeVideoModal();
+        }
+    });
+}
+
+function renderAllVideos() {
+    const container = document.getElementById('videos-container');
+    if (!container) return;
+    
+    container.innerHTML = '';
+    
+    window.videosData.forEach(video => {
+        const videoCard = createVideoCard(video);
+        container.appendChild(videoCard);
+    });
+}
+
+function createVideoCard(video) {
+    const card = document.createElement('div');
+    card.className = 'video-card';
+    card.dataset.category = video.category;
+    card.dataset.title = video.title.toLowerCase();
+    card.dataset.description = video.description.toLowerCase();
+    
+    // Extrair ID do YouTube para thumbnail
+    const videoId = window.videoUtils.extractYouTubeId(video.url);
+    const thumbnailUrl = videoId ? 
+        `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg` : 
+        '/images/video-placeholder.jpg';
+    
+    card.innerHTML = `
+        <div class="video-thumbnail">
+            <img src="${thumbnailUrl}" 
+                 alt="${video.title}"
+                 onerror="this.src='https://img.youtube.com/vi/${videoId}/hqdefault.jpg'">
+            <div class="play-overlay">
+                <div class="play-button">▶</div>
+            </div>
+            ${video.featured ? '<div class="video-badge">⭐ Destaque</div>' : ''}
+        </div>
+        <div class="video-info">
+            <h3 class="video-title">${video.title}</h3>
+            <p class="video-description">${video.description}</p>
+            <div class="video-meta">
+                <span class="video-category">${getCategoryName(video.category)}</span>
+                <span class="video-duration">${video.duration}</span>
+            </div>
+        </div>
+    `;
+    
+    // Adicionar evento de clique
+    card.addEventListener('click', () => {
+        openVideoModal(video.url, video.title);
+    });
+    
+    return card;
+}
+
+function getCategoryName(category) {
+    const categoryNames = {
+        'demonstracoes': '🎬 Demonstrações',
+        'depoimentos': '💬 Depoimentos',
+        'treinamentos': '🎓 Treinamentos',
+        'dicas-negocio': '💡 Dicas de Negócio',
+        'tutoriais': '📚 Tutoriais',
+        'novidades': '🆕 Novidades'
+    };
+    return categoryNames[category] || category;
 }
 
 function filterVideosByCategory(category) {
-    const videoCards = document.querySelectorAll('.video-card, .featured-video-card');
+    const cards = document.querySelectorAll('.video-card');
     
-    videoCards.forEach(card => {
-        if (category === 'all' || card.dataset.category === category) {
+    cards.forEach(card => {
+        if (category === 'all') {
             card.style.display = 'block';
+        } else if (category === 'featured') {
+            // Mostrar apenas vídeos em destaque
+            const hasBadge = card.querySelector('.video-badge');
+            card.style.display = hasBadge ? 'block' : 'none';
         } else {
-            card.style.display = 'none';
+            const cardCategory = card.dataset.category;
+            card.style.display = cardCategory === category ? 'block' : 'none';
         }
     });
-}
-
-function setupSearch() {
-    const searchInput = document.getElementById('video-search');
-    if (!searchInput) return;
     
-    searchInput.addEventListener('input', function() {
-        const searchTerm = this.value.toLowerCase();
-        searchVideos(searchTerm);
-    });
+    updateVideosCount();
 }
 
 function searchVideos(searchTerm) {
-    const videoCards = document.querySelectorAll('.video-card, .featured-video-card');
+    const cards = document.querySelectorAll('.video-card');
     
-    videoCards.forEach(card => {
-        const title = card.querySelector('.video-title').textContent.toLowerCase();
-        const description = card.querySelector('.video-description').textContent.toLowerCase();
-        const tags = card.dataset.tags.toLowerCase();
+    cards.forEach(card => {
+        const title = card.dataset.title;
+        const description = card.dataset.description;
         
-        if (title.includes(searchTerm) || description.includes(searchTerm) || tags.includes(searchTerm)) {
+        if (title.includes(searchTerm) || description.includes(searchTerm)) {
             card.style.display = 'block';
         } else {
             card.style.display = 'none';
         }
     });
+    
+    updateVideosCount();
 }
 
-function setupVideoModal() {
-    const modal = document.getElementById('video-modal');
-    const modalOverlay = document.querySelector('.modal-overlay');
-    const closeBtn = document.querySelector('.modal-close');
-    const playerContainer = document.getElementById('video-player');
+function updateSectionTitle(category) {
+    const titleElement = document.getElementById('current-section-title');
+    if (!titleElement) return;
     
-    if (!modal) return;
+    const titles = {
+        'all': 'Todos os Vídeos',
+        'featured': '⭐ Vídeos em Destaque',
+        'demonstracoes': '🎬 Demonstrações',
+        'depoimentos': '💬 Depoimentos',
+        'treinamentos': '🎓 Treinamentos',
+        'dicas-negocio': '💡 Dicas de Negócio',
+        'tutoriais': '📚 Tutoriais',
+        'novidades': '🆕 Novidades'
+    };
     
-    // Abrir modal ao clicar em "Assistir"
-    document.addEventListener('click', function(e) {
-        if (e.target.classList.contains('watch-btn') || e.target.closest('.watch-btn')) {
-            const button = e.target.classList.contains('watch-btn') ? e.target : e.target.closest('.watch-btn');
-            const videoUrl = button.dataset.videoUrl;
-            const videoTitle = button.dataset.videoTitle;
-            
-            openVideoModal(videoUrl, videoTitle);
-        }
-    });
+    titleElement.textContent = titles[category] || 'Vídeos';
+}
+
+function updateVideosCount() {
+    const visibleCards = document.querySelectorAll('.video-card[style*="block"], .video-card:not([style*="none"])');
+    const countElement = document.getElementById('videos-count');
     
-    // Fechar modal
-    function closeModal() {
-        modal.classList.remove('active');
-        playerContainer.innerHTML = '';
-        document.body.style.overflow = 'auto';
+    if (countElement) {
+        const count = visibleCards.length;
+        countElement.textContent = `${count} vídeo${count !== 1 ? 's' : ''}`;
     }
-    
-    if (closeBtn) closeBtn.addEventListener('click', closeModal);
-    if (modalOverlay) modalOverlay.addEventListener('click', closeModal);
-    
-    // Fechar com ESC
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape' && modal.classList.contains('active')) {
-            closeModal();
-        }
-    });
 }
 
 function openVideoModal(videoUrl, videoTitle) {
@@ -208,7 +188,7 @@ function openVideoModal(videoUrl, videoTitle) {
     const videoId = window.videoUtils.extractYouTubeId(videoUrl);
     
     if (videoId) {
-        // Parâmetros mais restritivos para remover controles desnecessários
+        // Parâmetros corretos para manter controles básicos
         const embedUrl = `https://www.youtube.com/embed/${videoId}?` +
             `autoplay=1` +           // Reproduzir automaticamente
             `&controls=1` +          // ✅ MANTER controles básicos (play/pause, volume, progresso)
@@ -245,5 +225,70 @@ function openVideoModal(videoUrl, videoTitle) {
     
     modal.classList.add('active');
     document.body.style.overflow = 'hidden';
+}
+
+function closeVideoModal() {
+    const modal = document.getElementById('video-modal');
+    const playerContainer = document.getElementById('video-player');
+    
+    if (modal) {
+        modal.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+    
+    if (playerContainer) {
+        playerContainer.innerHTML = '';
+    }
+}
+
+// Utilitários para extrair ID do YouTube
+window.videoUtils = {
+    extractYouTubeId: function(url) {
+        if (!url) return null;
+        
+        const patterns = [
+            /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/|youtube\.com\/shorts\/)([^&\n?#]+)/,
+            /^([a-zA-Z0-9_-]{11})$/
+        ];
+        
+        for (let pattern of patterns) {
+            const match = url.match(pattern);
+            if (match) return match[1];
+        }
+        
+        return null;
+    }
+};
+
+// Responsividade - Toggle sidebar no mobile
+function toggleSidebar() {
+    const sidebar = document.querySelector('.videos-sidebar');
+    if (sidebar) {
+        sidebar.classList.toggle('open');
+    }
+}
+
+// Adicionar botão de menu no mobile (se necessário)
+if (window.innerWidth <= 768) {
+    const mainContent = document.querySelector('.videos-main');
+    if (mainContent) {
+        const menuButton = document.createElement('button');
+        menuButton.innerHTML = '☰ Menu';
+        menuButton.className = 'mobile-menu-btn';
+        menuButton.style.cssText = `
+            position: fixed;
+            top: 1rem;
+            left: 1rem;
+            z-index: 1000;
+            background: rgba(0,0,0,0.8);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+        `;
+        menuButton.addEventListener('click', toggleSidebar);
+        document.body.appendChild(menuButton);
+    }
 }
 

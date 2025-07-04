@@ -29,140 +29,92 @@
 
     
 <div class="videos-page">
-    <!-- Header da página -->
-    <div class="videos-header">
-        <div class="container">
-            <h1 class="videos-title">Central de Vídeos</h1>
-            <p class="videos-subtitle">Descubra todo o potencial da K3-350 através dos nossos vídeos</p>
+    <!-- Sidebar Menu -->
+    <aside class="videos-sidebar">
+        <div class="sidebar-header">
+            <h2>📺 Vídeos</h2>
+            <p>Silk Machine K3-350</p>
+        </div>
+        
+        <nav class="sidebar-nav">
+            <button class="nav-item active" data-category="all">
+                🏠 Início
+            </button>
+            <button class="nav-item" data-category="featured">
+                ⭐ Em Destaque
+            </button>
+            <button class="nav-item" data-category="demonstracoes">
+                🎬 Demonstrações
+            </button>
+            <button class="nav-item" data-category="depoimentos">
+                💬 Depoimentos
+            </button>
+            <button class="nav-item" data-category="treinamentos">
+                🎓 Treinamentos
+            </button>
+            <button class="nav-item" data-category="dicas-negocio">
+                💡 Dicas de Negócio
+            </button>
+        </nav>
+        
+        <div class="sidebar-footer">
+            <div class="social-links">
+                <a href="https://www.youtube.com/@silkmachine/videos" target="_blank" title="YouTube">📺</a>
+                <a href="https://www.instagram.com/silkmachine/" target="_blank" title="Instagram">📸</a>
+                <a href="https://www.tiktok.com/@silkmachine" target="_blank" title="TikTok">🎵</a>
+                <a href="https://www.facebook.com/silkmachine" target="_blank" title="Facebook">👥</a>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="videos-main">
+        <!-- Hero Section -->
+        <section class="hero-section">
+            <div class="hero-content">
+                <h1>Descubra o Potencial da K3-350</h1>
+                <p>Vídeos exclusivos mostrando como faturar alto com a máquina serigráfica mais indicada do mercado</p>
+                <div class="hero-stats">
+                    <span>📈 +2000 impressões/hora</span>
+                    <span>💰 Alta lucratividade</span>
+                    <span>🎯 Baixo investimento</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Search Bar -->
+        <div class="search-section">
+            <div class="search-container">
+                <input type="text" id="video-search" placeholder="🔍 Buscar vídeos..." />
+            </div>
+        </div>
+
+        <!-- Videos Grid -->
+        <section class="videos-content">
+            <div class="section-header">
+                <h2 id="current-section-title">Todos os Vídeos</h2>
+                <span id="videos-count">0 vídeos</span>
+            </div>
             
-            <!-- Filtros e busca -->
-            <div class="videos-controls">
-                <div class="search-box">
-                    <input type="text" id="video-search" placeholder="Buscar vídeos..." />
-                    <i class="search-icon">🔍</i>
-                </div>
-                
-                <div class="category-filters">
-                    <button class="filter-btn active" data-category="all">Todos</button>
-                    <button class="filter-btn" data-category="demonstracoes">Demonstrações</button>
-                    <button class="filter-btn" data-category="depoimentos">Depoimentos</button>
-                    <button class="filter-btn" data-category="treinamentos">Treinamentos</button>
-                    <button class="filter-btn" data-category="dicas-negocio">Dicas de Negócio</button>
-                    <button class="filter-btn" data-category="tutoriais">Tutoriais</button>
-                    <button class="filter-btn" data-category="novidades">Novidades</button>
-                </div>
+            <div class="videos-grid" id="videos-container">
+                <!-- Vídeos serão inseridos aqui via JavaScript -->
             </div>
-        </div>
-    </div>
-
-    <!-- Vídeos em destaque -->
-    <section class="featured-videos">
-        <div class="container">
-            <h2 class="section-title">Vídeos em Destaque</h2>
-            <div class="featured-carousel">
-                
-                
-            </div>
-        </div>
-    </section>
-
-    <!-- Seções por categoria -->
-    <section class="category-sections">
-        <div class="container">
-            
-            <!-- Demonstrações -->
-            <div class="category-section" data-category="demonstracoes">
-                <h2 class="section-title">
-                    <span class="category-icon">🎬</span>
-                    Demonstrações
-                </h2>
-                <div class="videos-carousel">
-                    
-                    
-                </div>
-            </div>
-
-            <!-- Depoimentos -->
-            <div class="category-section" data-category="depoimentos">
-                <h2 class="section-title">
-                    <span class="category-icon">💬</span>
-                    Depoimentos
-                </h2>
-                <div class="videos-carousel">
-                    
-                    
-                </div>
-            </div>
-
-            <!-- Treinamentos -->
-            <div class="category-section" data-category="treinamentos">
-                <h2 class="section-title">
-                    <span class="category-icon">🎓</span>
-                    Treinamentos
-                </h2>
-                <div class="videos-carousel">
-                    
-                    
-                </div>
-            </div>
-
-            <!-- Dicas de Negócio -->
-            <div class="category-section" data-category="dicas-negocio">
-                <h2 class="section-title">
-                    <span class="category-icon">💡</span>
-                    Dicas de Negócio
-                </h2>
-                <div class="videos-carousel">
-                    
-                    
-                </div>
-            </div>
-
-        </div>
-    </section>
+        </section>
+    </main>
 
     <!-- Modal do player de vídeo -->
-    <div id="video-modal" class="video-modal">
-        <div class="modal-overlay"></div>
+    <div class="video-modal" id="video-modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 class="modal-title"></h3>
-                <button class="modal-close">&times;</button>
+                <h3 class="modal-title">Título do Vídeo</h3>
+                <button class="modal-close" onclick="closeVideoModal()">&times;</button>
             </div>
             <div class="modal-body">
                 <div id="video-player"></div>
             </div>
         </div>
+        <div class="modal-overlay" onclick="closeVideoModal()"></div>
     </div>
-
-    <!-- Links para redes sociais -->
-    <section class="social-links">
-        <div class="container">
-            <h2 class="section-title">Siga-nos nas Redes Sociais</h2>
-            <div class="social-grid">
-                <a href="https://www.youtube.com/@silkmachine/videos" target="_blank" class="social-card youtube">
-                    <div class="social-icon">📺</div>
-                    <h3>YouTube</h3>
-                    <p>Vídeos completos e tutoriais detalhados</p>
-                </a>
-                <a href="https://www.instagram.com/silkmachine/" target="_blank" class="social-card instagram">
-                    <div class="social-icon">📸</div>
-                    <h3>Instagram</h3>
-                    <p>Fotos e vídeos do dia a dia</p>
-                </a>
-                <a href="https://www.tiktok.com/@silkmachine" target="_blank" class="social-card tiktok">
-                    <div class="social-icon">🎵</div>
-                    <h3>TikTok</h3>
-                    <p>Vídeos rápidos e criativos</p>
-                </a>
-                <a href="https://www.facebook.com/silkmachine" target="_blank" class="social-card facebook">
-                    <div class="social-icon">👥</div>
-                    <h3>Facebook</h3>
-                    <p>Comunidade e atualizações</p>
-                </a>
-            </div>
-        </div>
-    </section>
 </div>
 
 
