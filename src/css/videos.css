@@ -719,3 +719,155 @@
     }
 }
 
+
+/* ===== THUMBNAILS DE DIFERENTES PLATAFORMAS ===== */
+.tiktok-thumbnail,
+.instagram-thumbnail,
+.generic-thumbnail {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: #fff;
+    font-weight: bold;
+    text-align: center;
+}
+
+.tiktok-thumbnail {
+    background: linear-gradient(135deg, #ff0050, #00f2ea);
+}
+
+.instagram-thumbnail {
+    background: linear-gradient(135deg, #833ab4, #fd1d1d, #fcb045);
+}
+
+.generic-thumbnail {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+}
+
+.tiktok-icon,
+.instagram-icon,
+.generic-icon {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.tiktok-thumbnail span,
+.instagram-thumbnail span,
+.generic-thumbnail span {
+    font-size: 0.9rem;
+    opacity: 0.9;
+}
+
+/* ===== MELHORIAS NO BADGE DE DESTAQUE ===== */
+.video-badge {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    background: linear-gradient(135deg, #ffd700, #ffb347);
+    color: #333;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: bold;
+    box-shadow: 0 2px 8px rgba(255, 215, 0, 0.3);
+    z-index: 2;
+}
+
+/* ===== MELHORIAS NA DURAÇÃO DO VÍDEO ===== */
+.video-duration {
+    position: absolute;
+    bottom: 12px;
+    right: 12px;
+    background: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    padding: 4px 8px;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    backdrop-filter: blur(4px);
+    z-index: 2;
+}
+
+/* ===== MELHORIAS NAS CATEGORIAS ===== */
+.video-category {
+    background: rgba(78, 205, 196, 0.2);
+    color: #4ecdc4;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border: 1px solid rgba(78, 205, 196, 0.3);
+}
+
+
+/* ===== SEÇÕES DE CATEGORIA ===== */
+.category-section {
+    margin-bottom: 3rem;
+}
+
+.category-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid rgba(78, 205, 196, 0.3);
+}
+
+.category-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #fff;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.category-count {
+    background: rgba(78, 205, 196, 0.2);
+    color: #4ecdc4;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    border: 1px solid rgba(78, 205, 196, 0.3);
+}
+
+.category-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+
+/* ===== RESPONSIVIDADE PARA CATEGORIAS ===== */
+@media (max-width: 768px) {
+    .category-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+    
+    .category-title {
+        font-size: 1.25rem;
+    }
+    
+    .category-grid {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .category-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .category-section {
+        margin-bottom: 2rem;
+    }
+}
+

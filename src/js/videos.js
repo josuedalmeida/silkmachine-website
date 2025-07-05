@@ -15,6 +15,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Configurar banner
     setupBanner();
+    
+    // Organizar vídeos por categoria
+    organizeVideosByCategory();
 });
 
 // Configurar filtros de categoria
@@ -158,24 +161,51 @@ function openVideoModal(videoUrl, videoTitle) {
             showVideoError(playerContainer, videoUrl, 'YouTube');
         }
     } else if (videoUrl.includes('tiktok.com')) {
-        // TikTok - extrair ID se possível
+        // TikTok - embed direto
         console.log('Vídeo do TikTok detectado:', videoUrl);
         
-        // Tentar extrair ID do TikTok para thumbnail
+        // Tentar extrair ID do TikTok
         const tiktokIdMatch = videoUrl.match(/video\/(\d+)/);
         const tiktokId = tiktokIdMatch ? tiktokIdMatch[1] : null;
         
-        playerContainer.innerHTML = `
-            <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; background: linear-gradient(135deg, #ff0050, #00f2ea); color: #fff; border-radius: 8px; text-align: center; padding: 20px;">
-                <div style="font-size: 48px; margin-bottom: 20px;">🎵</div>
-                <h3 style="margin: 0 0 10px 0; font-size: 18px;">Vídeo do TikTok</h3>
-                <p style="margin: 0 0 20px 0; opacity: 0.9;">Este vídeo está disponível no TikTok</p>
-                ${tiktokId ? `<p style="margin: 0 0 20px 0; font-size: 12px; opacity: 0.7;">ID: ${tiktokId}</p>` : ''}
-                <a href="${videoUrl}" target="_blank" style="background: rgba(255,255,255,0.2); color: #fff; padding: 12px 24px; border-radius: 25px; text-decoration: none; font-weight: bold; border: 2px solid rgba(255,255,255,0.3); transition: all 0.3s ease;">
-                    🚀 Assistir no TikTok
-                </a>
-            </div>
-        `;
+        if (tiktokId) {
+            console.log('TikTok ID encontrado:', tiktokId);
+            
+            // Embed direto do TikTok
+            playerContainer.innerHTML = `
+                <blockquote 
+                    class="tiktok-embed" 
+                    cite="${videoUrl}" 
+                    data-video-id="${tiktokId}" 
+                    style="max-width: 605px; min-width: 325px; margin: 0 auto; border-radius: 8px; overflow: hidden;">
+                    <section>
+                        <a target="_blank" title="@silkmachine" href="https://www.tiktok.com/@silkmachine">@silkmachine</a>
+                    </section>
+                </blockquote>
+                <script async src="https://www.tiktok.com/embed.js"></script>
+            `;
+            
+            // Fallback caso o embed não carregue
+            setTimeout(() => {
+                const tiktokEmbed = playerContainer.querySelector('.tiktok-embed');
+                if (tiktokEmbed && tiktokEmbed.children.length <= 1) {
+                    playerContainer.innerHTML = `
+                        <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; background: linear-gradient(135deg, #ff0050, #00f2ea); color: #fff; border-radius: 8px; text-align: center; padding: 20px;">
+                            <div style="font-size: 48px; margin-bottom: 20px;">🎵</div>
+                            <h3 style="margin: 0 0 10px 0; font-size: 18px;">Vídeo do TikTok</h3>
+                            <p style="margin: 0 0 20px 0; opacity: 0.9;">Carregando vídeo...</p>
+                            <p style="margin: 0 0 20px 0; font-size: 12px; opacity: 0.7;">ID: ${tiktokId}</p>
+                            <a href="${videoUrl}" target="_blank" style="background: rgba(255,255,255,0.2); color: #fff; padding: 12px 24px; border-radius: 25px; text-decoration: none; font-weight: bold; border: 2px solid rgba(255,255,255,0.3); transition: all 0.3s ease;">
+                                🚀 Assistir no TikTok
+                            </a>
+                        </div>
+                    `;
+                }
+            }, 3000);
+        } else {
+            console.error('ID do TikTok não encontrado para:', videoUrl);
+            showVideoError(playerContainer, videoUrl, 'TikTok');
+        }
     } else if (videoUrl.includes('instagram.com')) {
         // Instagram - extrair ID se possível
         console.log('Vídeo do Instagram detectado:', videoUrl);
@@ -305,5 +335,154 @@ function setupBanner() {
             banner.style.display = 'none';
         }
     }
+}
+
+
+
+// ===== ORGANIZAÇÃO POR CATEGORIAS =====
+
+// Organizar vídeos por categoria em seções
+function organizeVideosByCategory() {
+    const videosContainer = document.querySelector('.videos-grid');
+    const videoCards = Array.from(document.querySelectorAll('.video-card'));
+    
+    if (!videosContainer || videoCards.length === 0) return;
+    
+    // Agrupar vídeos por categoria
+    const categories = {
+        'destaque': { name: '⭐ Em Destaque', videos: [] },
+        'demonstracoes': { name: '🎬 Demonstrações', videos: [] },
+        'depoimentos': { name: '💬 Depoimentos', videos: [] },
+        'treinamentos': { name: '🎓 Treinamentos', videos: [] },
+        'dicas-negocio': { name: '💡 Dicas de Negócio', videos: [] },
+        'novidades': { name: '📢 Novidades', videos: [] },
+        'tutoriais': { name: '📚 Tutoriais', videos: [] }
+    };
+    
+    // Separar vídeos em destaque primeiro
+    videoCards.forEach(card => {
+        const category = card.dataset.category;
+        const isFeatured = card.querySelector('.video-badge');
+        
+        if (isFeatured) {
+            categories.destaque.videos.push(card);
+        } else if (categories[category]) {
+            categories[category].videos.push(card);
+        }
+    });
+    
+    // Limpar container
+    videosContainer.innerHTML = '';
+    
+    // Criar seções para cada categoria com vídeos
+    Object.keys(categories).forEach(categoryKey => {
+        const category = categories[categoryKey];
+        if (category.videos.length > 0) {
+            createCategorySection(videosContainer, category.name, category.videos, categoryKey);
+        }
+    });
+}
+
+// Criar seção de categoria
+function createCategorySection(container, categoryName, videos, categoryKey) {
+    // Criar seção da categoria
+    const section = document.createElement('div');
+    section.className = 'category-section';
+    section.dataset.category = categoryKey;
+    
+    // Cabeçalho da categoria
+    const header = document.createElement('div');
+    header.className = 'category-header';
+    header.innerHTML = `
+        <h3 class="category-title">${categoryName}</h3>
+        <span class="category-count">${videos.length} vídeo${videos.length > 1 ? 's' : ''}</span>
+    `;
+    
+    // Grid de vídeos da categoria
+    const grid = document.createElement('div');
+    grid.className = 'category-grid';
+    
+    // Adicionar vídeos à grid
+    videos.forEach(video => {
+        grid.appendChild(video);
+    });
+    
+    // Montar seção
+    section.appendChild(header);
+    section.appendChild(grid);
+    container.appendChild(section);
+}
+
+// Atualizar função de filtro para trabalhar com categorias
+function filterVideosByCategory(category) {
+    const categorySections = document.querySelectorAll('.category-section');
+    let visibleCount = 0;
+    
+    categorySections.forEach(section => {
+        const sectionCategory = section.dataset.category;
+        const videos = section.querySelectorAll('.video-card');
+        
+        if (category.includes('início') || category.includes('todos')) {
+            section.style.display = 'block';
+            visibleCount += videos.length;
+        } else if (category.includes('destaque') && sectionCategory === 'destaque') {
+            section.style.display = 'block';
+            visibleCount += videos.length;
+        } else if (category.includes('demonstrações') && sectionCategory === 'demonstracoes') {
+            section.style.display = 'block';
+            visibleCount += videos.length;
+        } else if (category.includes('depoimentos') && sectionCategory === 'depoimentos') {
+            section.style.display = 'block';
+            visibleCount += videos.length;
+        } else if (category.includes('treinamentos') && sectionCategory === 'treinamentos') {
+            section.style.display = 'block';
+            visibleCount += videos.length;
+        } else if (category.includes('dicas') && sectionCategory === 'dicas-negocio') {
+            section.style.display = 'block';
+            visibleCount += videos.length;
+        } else {
+            section.style.display = 'none';
+        }
+    });
+    
+    // Atualizar contador
+    updateVideoCount(visibleCount);
+}
+
+// Atualizar função de busca para trabalhar com categorias
+function filterVideosBySearch(searchTerm) {
+    const categorySections = document.querySelectorAll('.category-section');
+    let visibleCount = 0;
+    
+    categorySections.forEach(section => {
+        const videos = section.querySelectorAll('.video-card');
+        let sectionHasVisibleVideos = false;
+        
+        videos.forEach(card => {
+            const title = card.dataset.title || '';
+            const description = card.dataset.description || '';
+            const tags = card.dataset.tags || '';
+            
+            if (title.includes(searchTerm) || description.includes(searchTerm) || tags.includes(searchTerm)) {
+                card.style.display = 'block';
+                visibleCount++;
+                sectionHasVisibleVideos = true;
+            } else {
+                card.style.display = 'none';
+            }
+        });
+        
+        // Mostrar/ocultar seção baseado se tem vídeos visíveis
+        section.style.display = sectionHasVisibleVideos ? 'block' : 'none';
+        
+        // Atualizar contador da categoria
+        const categoryCount = section.querySelector('.category-count');
+        const visibleVideosInSection = section.querySelectorAll('.video-card[style*="block"]').length;
+        if (categoryCount) {
+            categoryCount.textContent = `${visibleVideosInSection} vídeo${visibleVideosInSection !== 1 ? 's' : ''}`;
+        }
+    });
+    
+    updateVideoCount(visibleCount);
 }
 
