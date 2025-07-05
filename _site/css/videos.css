@@ -238,7 +238,8 @@
 .video-thumbnail {
     position: relative;
     width: 100%;
-    aspect-ratio: 16/10; /* Mudado de 9/16 para 16/10 (mais compacto) */
+    aspect-ratio: 9/16; /* Mantendo formato vertical mas reduzindo altura */
+    max-height: 200px; /* Limitando altura máxima para cards menores */
     overflow: hidden;
 }
 

@@ -106,7 +106,37 @@ permalink: /videos/index.html
             </div>
             
             <div class="videos-grid" id="videos-container">
-                <!-- Vídeos serão inseridos aqui via JavaScript -->
+                {% for video in collections.videos %}
+                <div class="video-card" data-category="{{ video.data.category }}" data-title="{{ video.data.title | lower }}" data-description="{{ video.data.description | lower }}" onclick="openVideoModal('{{ video.data.video_url }}', '{{ video.data.title }}')">
+                    <div class="video-thumbnail">
+                        {% set videoId = video.data.video_url | extractYouTubeId %}
+                        {% if videoId %}
+                            <img src="https://img.youtube.com/vi/{{ videoId }}/mqdefault.jpg" 
+                                 alt="{{ video.data.title }}"
+                                 onerror="this.onerror=null; this.src='https://img.youtube.com/vi/{{ videoId }}/default.jpg';"
+                                 loading="lazy">
+                        {% else %}
+                            <img src="https://via.placeholder.com/480x270/667eea/ffffff?text=Video" 
+                                 alt="{{ video.data.title }}"
+                                 loading="lazy">
+                        {% endif %}
+                        <div class="play-overlay">
+                            <div class="play-button">▶</div>
+                        </div>
+                        {% if video.data.featured %}
+                            <div class="video-badge">⭐ Destaque</div>
+                        {% endif %}
+                    </div>
+                    <div class="video-info">
+                        <h3 class="video-title">{{ video.data.title }}</h3>
+                        <p class="video-description">{{ video.data.description }}</p>
+                        <div class="video-meta">
+                            <span class="video-category">{{ video.data.category | getCategoryName }}</span>
+                            <span class="video-duration">{{ video.data.duration }}s</span>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
             </div>
         </section>
     </main>

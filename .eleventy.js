@@ -55,7 +55,26 @@ module.exports = function(eleventyConfig) {
         return luxon.DateTime.fromJSDate(new Date(dateObj)).toFormat(format);
     });
 
+    eleventyConfig.addFilter("extractYouTubeId", function(url) {
+        if (!url) return null;
+        const regex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
+        const match = url.match(regex);
+        return match ? match[1] : null;
+    });
+
+    eleventyConfig.addFilter("getCategoryName", function(category) {
+        const categoryNames = {
+            'demonstracoes': '🎬 Demonstrações',
+            'depoimentos': '💬 Depoimentos',
+            'treinamentos': '🎓 Treinamentos',
+            'dicas-negocio': '💡 Dicas de Negócio',
+            'tutoriais': '📚 Tutoriais'
+        };
+        return categoryNames[category] || category;
+    });
+
     eleventyConfig.addFilter("striptags", function(str) {
+        if (!str) return '';
         return str.replace(/<[^>]*>/g, '');
     });
 
