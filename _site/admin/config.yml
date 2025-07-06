@@ -1,76 +1,50 @@
 backend:
   name: git-gateway
-  branch: main # ou master, dependendo do nome da sua branch principal no GitHub
+  branch: main
 
-publish_mode: editorial_workflow # Opcional: permite rascunhos e revisão antes de publicar
-media_folder: "src/images/uploads" # Onde as imagens enviadas pelo CMS serão salvas
-public_folder: "/images/uploads" # Caminho público para as imagens
+media_folder: "src/images"
+public_folder: "/images"
 
 collections:
-  - name: "posts" # Nome da coleção (posts do blog )
-    label: "Posts do Blog" # Título visível no CMS
-    folder: "src/posts" # Pasta onde os posts serão salvos
-    create: true # Permite criar novos posts
-    slug: "{{year}}-{{month}}-{{day}}-{{slug}}" # Formato do nome do arquivo (ex: 2025-06-26-meu-post.md)
-    fields: # Campos para cada post
-          - {label: "Título", name: "title", widget: "string", required: true}
-          - {label: "Autor", name: "author", widget: "string", default: "Equipe Silk Machine"}
-          - label: "Data" # Propriedade 'label'
-            name: "date"   # Propriedade 'name'
-            widget: "datetime" # Propriedade 'widget'
-            required: true # Propriedade 'required'
-            format: "YYYY-MM-DD" # Propriedade 'format' com indentação
-            date_format: "YYYY-MM-DD" # Propriedade 'date_format' com indentação
-          - {label: "Tags", name: "tags", widget: "list", default: ["blog"], required: false}
-          - {label: "Corpo do Post", name: "body", widget: "markdown", required: true}
-  
-  - name: "pages" # Exemplo de coleção para páginas estáticas (Sobre, Contato, etc.)
-    label: "Páginas"
-    folder: "src/pages" # Pasta onde as páginas serão salvas
+  - name: "posts"
+    label: "Posts do Blog"
+    folder: "src/posts"
     create: true
-    slug: "{{slug}}"
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
     fields:
-      - {label: "Título", name: "title", widget: "string", required: true}
-      - {label: "Corpo da Página", name: "body", widget: "markdown", required: true}
+      - { label: "Título", name: "title", widget: "string" }
+      - { label: "Descrição", name: "description", widget: "text" }
+      - { label: "Data", name: "date", widget: "datetime" }
+      - { label: "Tags", name: "tags", widget: "list", default: ["post"] }
+      - { label: "Conteúdo", name: "body", widget: "markdown" }
 
-  - name: "videos" # Nova coleção para vídeos
+  - name: "videos"
     label: "Vídeos"
-    folder: "src/videos" # Pasta onde os vídeos serão salvos
+    folder: "src/videos"
     create: true
     slug: "{{slug}}"
     fields:
-      - {label: "Título", name: "title", widget: "string", required: true}
-      - {label: "Descrição", name: "description", widget: "text", required: true}
-      - {label: "URL do Vídeo", name: "video_url", widget: "string", required: true, hint: "Cole aqui o link do YouTube, Instagram, TikTok ou Facebook"}
-      - label: "Categoria"
-        name: "category"
-        widget: "select"
-        required: true
-        options:
-          - {label: "Tutoriais K3-350", value: "tutoriais"}
-          - {label: "Demonstrações", value: "demonstracoes"}
-          - {label: "Depoimentos", value: "depoimentos"}
-          - {label: "Treinamentos", value: "treinamentos"}
-          - {label: "Novidades", value: "novidades"}
-          - {label: "Dicas de Negócio", value: "dicas-negocio"}
-      - {label: "Tags", name: "tags", widget: "list", required: false, hint: "Ex: K3-350, canecas, copos, serigrafia"}
-      - {label: "Thumbnail Personalizada", name: "thumbnail", widget: "image", required: false, hint: "Imagem opcional para substituir a thumbnail padrão do vídeo"}
-      - {label: "Vídeo em Destaque", name: "featured", widget: "boolean", default: false, hint: "Marque para exibir na seção de destaques"}
-      - label: "Data de Publicação"
-        name: "date"
-        widget: "datetime"
-        required: true
-        format: "YYYY-MM-DD"
-        date_format: "YYYY-MM-DD"
-      - {label: "Duração (em segundos)", name: "duration", widget: "number", required: false, hint: "Duração aproximada do vídeo em segundos"}
-      - label: "Plataforma"
-        name: "platform"
-        widget: "select"
-        required: true
-        options:
-          - {label: "YouTube", value: "youtube"}
-          - {label: "Instagram", value: "instagram"}
-          - {label: "TikTok", value: "tiktok"}
-          - {label: "Facebook", value: "facebook"}
-      - {label: "ID do Vídeo", name: "video_id", widget: "string", required: false, hint: "ID extraído automaticamente da URL (deixe em branco)"}
+      - { label: "Título", name: "title", widget: "string" }
+      - { label: "Descrição", name: "description", widget: "text" }
+      - { label: "URL do Vídeo", name: "video_url", widget: "string", hint: "URL completa do YouTube" }
+      - { label: "Categoria", name: "category", widget: "select", options: ["demonstracoes", "depoimentos", "treinamentos", "dicas-negocio", "tutoriais", "novidades"] }
+      - { label: "Plataforma", name: "platform", widget: "select", options: ["youtube", "instagram", "tiktok", "facebook"], default: "youtube" }
+      - { label: "Duração (segundos)", name: "duration", widget: "number", default: 60 }
+      - { label: "Data", name: "date", widget: "datetime" }
+      - { label: "Em Destaque", name: "featured", widget: "boolean", default: false }
+      - { label: "Tags", name: "tags", widget: "list", required: false }
+
+  - name: "settings"
+    label: "Configurações"
+    files:
+      - name: "banner"
+        label: "Banner da Página de Vídeos"
+        file: "src/_data/banner.json"
+        fields:
+          - { label: "Mostrar Banner", name: "show", widget: "boolean", default: true }
+          - { label: "Título", name: "title", widget: "string", default: "🚀 Oferta Especial: K3-350 com Desconto!" }
+          - { label: "Descrição", name: "description", widget: "text", default: "Aproveite nossa promoção exclusiva e garante sua máquina serigráfica com condições especiais. Últimas unidades!" }
+          - { label: "Texto do Botão", name: "button_text", widget: "string", default: "Quero Aproveitar" }
+          - { label: "Link do Botão", name: "button_link", widget: "string", default: "#contato" }
+          - { label: "Cor de Fundo", name: "background_color", widget: "select", options: ["gradient-red-blue", "gradient-purple-pink", "gradient-orange-yellow", "solid-blue", "solid-green"], default: "gradient-red-blue" }
 
