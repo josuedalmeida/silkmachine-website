@@ -9,7 +9,7 @@ category: demonstracoes
 platform: youtube
 duration: 65
 date: 2025-01-18
-featured: false
+featured: true
 tags:
   - K3-350
   - duas cores
