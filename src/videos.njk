@@ -5,19 +5,47 @@ permalink: /videos/index.html
 ---
 
 <div class="videos-page">
-    <!-- Header da página -->
-    <div class="videos-header">
+    <div class="main-featured-video-section">
         <div class="container">
-            <h1 class="videos-title">Central de Vídeos</h1>
-            <p class="videos-subtitle">Descubra todo o potencial da K3-350 através dos nossos vídeos</p>
-            
-            <!-- Filtros e busca -->
+            {% set mainFeaturedVideo = collections.videos | where("data.featured", true) | first %}
+            {% if mainFeaturedVideo %}
+                <div class="main-video-player">
+                    {% if mainFeaturedVideo.data.platform == "youtube" %}
+                        {% set mainVideoId = mainFeaturedVideo.data.video_url | replace("https://www.youtube.com/shorts/", "") | replace("https://www.youtube.com/watch?v=", "") | replace("https://youtu.be/", "") | replace("?.*", "") %}
+                        <img src="https://img.youtube.com/vi/{{ mainVideoId }}/maxresdefault.jpg" 
+                             alt="{{ mainFeaturedVideo.data.title }}" 
+                             onerror="this.src='https://img.youtube.com/vi/{{ mainVideoId }}/hqdefault.jpg'">
+                        <div class="play-overlay">
+                            <div class="play-button">▶</div>
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="main-video-info">
+                    <h1 class="main-video-title">{{ mainFeaturedVideo.data.title }}</h1>
+                    <p class="main-video-description">{{ mainFeaturedVideo.data.description }}</p>
+                    <div class="main-video-meta">
+                        <span class="main-video-category">{{ mainFeaturedVideo.data.category | replace("-", " ") | title }}</span>
+                        <span class="main-video-date">{{ mainFeaturedVideo.data.date | date("DD/MM/YYYY") }}</span>
+                    </div>
+                    <div class="main-video-tags">
+                        {% for tag in mainFeaturedVideo.data.tags %}
+                            <span class="tag">#{{ tag }}</span>
+                        {% endfor %}
+                    </div>
+                    <button class="watch-btn main-watch-btn" data-video-url="{{ mainFeaturedVideo.data.video_url }}" data-video-title="{{ mainFeaturedVideo.data.title }}">
+                        Assistir Agora
+                    </button>
+                </div>
+            {% else %}
+                <h1 class="videos-title">Central de Vídeos</h1>
+                <p class="videos-subtitle">Descubra todo o potencial da K3-350 através dos nossos vídeos</p>
+            {% endif %}
+
             <div class="videos-controls">
                 <div class="search-box">
                     <input type="text" id="video-search" placeholder="Buscar vídeos..." />
                     <i class="search-icon">🔍</i>
                 </div>
-                
                 <div class="category-filters">
                     <button class="filter-btn active" data-category="all">Todos</button>
                     <button class="filter-btn" data-category="demonstracoes">Demonstrações</button>
@@ -31,57 +59,54 @@ permalink: /videos/index.html
         </div>
     </div>
 
-    <!-- Vídeos em destaque -->
     <section class="featured-videos">
         <div class="container">
-            <h2 class="section-title">Vídeos em Destaque</h2>
-            <div class="featured-carousel">
-                {% set featuredVideos = collections.videos | where("data.featured", true) | reverse %}
-                {% for video in featuredVideos %}
-                <div class="featured-video-card" data-category="{{ video.data.category }}">
-                    <div class="video-thumbnail">
-                        {% if video.data.platform == "youtube" %}
-                            {% set videoId = video.data.video_url | replace("https://www.youtube.com/shorts/", "") | replace("https://www.youtube.com/watch?v=", "") | replace("https://youtu.be/", "") | replace("?.*", "") %}
-                            <img src="https://img.youtube.com/vi/{{ videoId }}/maxresdefault.jpg" 
-                                 alt="{{ video.data.title }}" 
-                                 onerror="this.src='https://img.youtube.com/vi/{{ videoId }}/hqdefault.jpg'">
-                        {% endif %}
-                        <div class="play-overlay">
-                            <div class="play-button">▶</div>
-                        </div>
-                        <div class="video-duration">
-                            {% if video.data.duration %}
-                                {{ (video.data.duration / 60) | round }}:{{ (video.data.duration % 60) | string | padStart(2, "0") }}
+            <h2 class="section-title">Outros Vídeos em Destaque</h2>
+            <div class="videos-carousel featured-carousel-secondary"> {# Usando videos-carousel para garantir horizontalidade #}
+                {% set additionalFeaturedVideos = collections.videos | where("data.featured", true) | reverse | slice(1, collections.videos | where("data.featured", true) | length) %} {# Pega todos exceto o primeiro #}
+                {% for video in additionalFeaturedVideos %}
+                    <div class="video-card featured-video-card-small" data-category="{{ video.data.category }}">
+                        <div class="video-thumbnail">
+                            {% if video.data.platform == "youtube" %}
+                                {% set videoId = video.data.video_url | replace("https://www.youtube.com/shorts/", "") | replace("https://www.youtube.com/watch?v=", "") | replace("https://youtu.be/", "") | replace("?.*", "") %}
+                                <img src="https://img.youtube.com/vi/{{ videoId }}/maxresdefault.jpg" 
+                                     alt="{{ video.data.title }}" 
+                                     onerror="this.src='https://img.youtube.com/vi/{{ videoId }}/hqdefault.jpg'">
                             {% endif %}
+                            <div class="play-overlay">
+                                <div class="play-button">▶</div>
+                            </div>
+                            <div class="video-duration">
+                                {% if video.data.duration %}
+                                    {{ (video.data.duration / 60) | round }}:{{ (video.data.duration % 60) | string | padStart(2, "0") }}
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="video-info">
+                            <h3 class="video-title">{{ video.data.title }}</h3>
+                            <p class="video-description">{{ video.data.description }}</p>
+                            <div class="video-meta">
+                                <span class="video-category">{{ video.data.category | replace("-", " ") | title }}</span>
+                                <span class="video-date">{{ video.data.date | date("DD/MM/YYYY") }}</span>
+                            </div>
+                            <div class="video-tags">
+                                {% for tag in video.data.tags %}
+                                    <span class="tag">#{{ tag }}</span>
+                                {% endfor %}
+                            </div>
+                            <button class="watch-btn" data-video-url="{{ video.data.video_url }}" data-video-title="{{ video.data.title }}">
+                                Assistir Vídeo
+                            </button>
                         </div>
                     </div>
-                    <div class="video-info">
-                        <h3 class="video-title">{{ video.data.title }}</h3>
-                        <p class="video-description">{{ video.data.description }}</p>
-                        <div class="video-meta">
-                            <span class="video-category">{{ video.data.category | replace("-", " ") | title }}</span>
-                            <span class="video-date">{{ video.data.date | date("DD/MM/YYYY") }}</span>
-                        </div>
-                        <div class="video-tags">
-                            {% for tag in video.data.tags %}
-                                <span class="tag">#{{ tag }}</span>
-                            {% endfor %}
-                        </div>
-                    </div>
-                    <button class="watch-btn" data-video-url="{{ video.data.video_url }}" data-video-title="{{ video.data.title }}">
-                        Assistir Vídeo
-                    </button>
-                </div>
                 {% endfor %}
             </div>
         </div>
     </section>
 
-    <!-- Seções por categoria -->
     <section class="category-sections">
         <div class="container">
             
-            <!-- Demonstrações -->
             <div class="category-section" data-category="demonstracoes">
                 <h2 class="section-title">
                     <span class="category-icon">🎬</span>
@@ -95,7 +120,6 @@ permalink: /videos/index.html
                 </div>
             </div>
 
-            <!-- Depoimentos -->
             <div class="category-section" data-category="depoimentos">
                 <h2 class="section-title">
                     <span class="category-icon">💬</span>
@@ -109,7 +133,6 @@ permalink: /videos/index.html
                 </div>
             </div>
 
-            <!-- Treinamentos -->
             <div class="category-section" data-category="treinamentos">
                 <h2 class="section-title">
                     <span class="category-icon">🎓</span>
@@ -123,7 +146,6 @@ permalink: /videos/index.html
                 </div>
             </div>
 
-            <!-- Dicas de Negócio -->
             <div class="category-section" data-category="dicas-negocio">
                 <h2 class="section-title">
                     <span class="category-icon">💡</span>
@@ -140,13 +162,12 @@ permalink: /videos/index.html
         </div>
     </section>
 
-    <!-- Modal do player de vídeo -->
     <div id="video-modal" class="video-modal">
         <div class="modal-overlay"></div>
         <div class="modal-content">
             <div class="modal-header">
                 <h3 class="modal-title"></h3>
-                <button class="modal-close">&times;</button>
+                <button class="modal-close">×</button>
             </div>
             <div class="modal-body">
                 <div id="video-player"></div>
@@ -154,7 +175,6 @@ permalink: /videos/index.html
         </div>
     </div>
 
-    <!-- Links para redes sociais -->
     <section class="social-links">
         <div class="container">
             <h2 class="section-title">Siga-nos nas Redes Sociais</h2>

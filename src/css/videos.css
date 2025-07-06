@@ -7,16 +7,19 @@
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-/* Header da página */
-.videos-header {
+/* Seção de vídeo principal em destaque */
+.main-featured-video-section {
     background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.3));
-    padding: 4rem 0 3rem;
+    padding: 4rem 0 3rem; /* Ajustado para dar espaço */
     text-align: center;
     position: relative;
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
-.videos-header::before {
+.main-featured-video-section::before {
     content: '';
     position: absolute;
     top: 0;
@@ -27,7 +30,98 @@
     opacity: 0.3;
 }
 
-.videos-title {
+.main-video-player {
+    position: relative;
+    width: 100%;
+    max-width: 900px; /* Ajuste conforme a largura desejada para o vídeo principal */
+    aspect-ratio: 16 / 9; /* Mantém a proporção 16:9 */
+    margin-bottom: 2rem;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 15px 30px rgba(0,0,0,0.4);
+}
+
+.main-video-player img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.main-video-info {
+    max-width: 900px;
+    text-align: left;
+    margin-bottom: 2.5rem;
+    position: relative;
+    z-index: 1;
+}
+
+.main-video-title {
+    font-size: 3.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1);
+    background-size: 200% 200%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: gradientShift 3s ease-in-out infinite;
+    line-height: 1.2;
+}
+
+.main-video-description {
+    font-size: 1.3rem;
+    color: #b8b8b8;
+    margin-bottom: 1.5rem;
+    line-height: 1.5;
+}
+
+.main-video-meta {
+    display: flex;
+    gap: 1.5rem;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+    color: #888;
+}
+
+.main-video-category {
+    background: rgba(78, 205, 196, 0.2);
+    color: #4ecdc4;
+    padding: 0.3rem 0.8rem;
+    border-radius: 15px;
+    font-weight: 500;
+    text-transform: capitalize;
+}
+
+.main-video-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-bottom: 2rem;
+}
+
+.main-watch-btn {
+    width: auto;
+    padding: 1rem 2.5rem;
+    font-size: 1.1rem;
+    border-radius: 30px;
+    margin: 0; /* Remove margens extras */
+}
+
+/* Controles de busca e filtros */
+.videos-controls {
+    max-width: 1200px; /* Ajustado para caber mais na tela */
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+    width: 100%; /* Garante que ocupa a largura total do container */
+    padding: 0 1rem; /* Adiciona um pouco de padding lateral */
+}
+
+/* Header da página - estilos originais, renomeados ou ajustados */
+/* O .videos-header original foi reestruturado na nova .main-featured-video-section */
+
+.videos-title { /* Mantido para fallback */
     font-size: 3.5rem;
     font-weight: 700;
     margin-bottom: 1rem;
@@ -46,18 +140,10 @@
     50% { background-position: 100% 50%; }
 }
 
-.videos-subtitle {
+.videos-subtitle { /* Mantido para fallback */
     font-size: 1.3rem;
     color: #b8b8b8;
     margin-bottom: 2.5rem;
-    position: relative;
-    z-index: 1;
-}
-
-/* Controles de busca e filtros */
-.videos-controls {
-    max-width: 800px;
-    margin: 0 auto;
     position: relative;
     z-index: 1;
 }
@@ -153,33 +239,44 @@
     filter: drop-shadow(0 0 10px rgba(78, 205, 196, 0.5));
 }
 
-/* Carrossel de vídeos em destaque */
-.featured-carousel {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-    gap: 2rem;
-    margin-bottom: 3rem;
+/* Carrossel de vídeos em destaque (original, agora secundário) */
+/* O .featured-carousel original foi substituído por .videos-carousel com classe adicional */
+.featured-carousel-secondary {
+    display: flex; /* Garante que os itens estejam lado a lado */
+    gap: 1.5rem;
+    overflow-x: auto;
+    padding: 1rem 0;
+    scroll-behavior: smooth;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(78, 205, 196, 0.5) transparent;
 }
 
-.featured-video-card {
+
+.featured-video-card-small { /* Estilos para os vídeos em destaque adicionais */
+    min-width: 250px; /* Largura mínima para os cards pequenos */
+    max-width: 300px; /* Largura máxima para os cards pequenos */
+    width: 100%;
+    flex-shrink: 0; /* Impede que os itens encolham */
     background: linear-gradient(145deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05));
-    border-radius: 20px;
+    border-radius: 15px;
     overflow: hidden;
     backdrop-filter: blur(20px);
     border: 1px solid rgba(255,255,255,0.1);
     transition: all 0.4s ease;
     position: relative;
+    margin-bottom: 1rem; /* Adicionado para separar um pouco na responsividade */
 }
 
-.featured-video-card:hover {
+.featured-video-card-small:hover {
     transform: translateY(-10px) scale(1.02);
     box-shadow: 0 20px 40px rgba(0,0,0,0.3);
     border-color: rgba(78, 205, 196, 0.5);
 }
 
-/* Carrosséis por categoria */
+
+/* Carrosséis por categoria (já horizontais) */
 .videos-carousel {
-    display: flex;
+    display: flex; /* Já está flex, então é horizontal */
     gap: 1.5rem;
     overflow-x: auto;
     padding: 1rem 0;
@@ -216,6 +313,7 @@
     border: 1px solid rgba(255,255,255,0.1);
     transition: all 0.3s ease;
     position: relative;
+    flex-shrink: 0; /* Impede que os itens encolham */
 }
 
 .video-card:hover {
@@ -227,7 +325,8 @@
 .video-thumbnail {
     position: relative;
     width: 100%;
-    height: 180px;
+    /* height: 180px; */ /* Removido para usar aspect-ratio */
+    aspect-ratio: 9 / 16; /* Proporção vertical 9x16 */
     overflow: hidden;
 }
 
@@ -256,7 +355,8 @@
     transition: opacity 0.3s ease;
 }
 
-.video-card:hover .play-overlay {
+.video-card:hover .play-overlay,
+.main-video-player:hover .play-overlay { /* Adicionado para o vídeo principal */
     opacity: 1;
 }
 
@@ -275,7 +375,8 @@
     transition: transform 0.3s ease;
 }
 
-.video-card:hover .play-button {
+.video-card:hover .play-button,
+.main-video-player:hover .play-button { /* Adicionado para o vídeo principal */
     transform: scale(1);
 }
 
@@ -601,11 +702,19 @@
 
 /* Responsividade */
 @media (max-width: 768px) {
-    .videos-title {
+    .main-video-title {
         font-size: 2.5rem;
     }
     
-    .videos-subtitle {
+    .main-video-description {
+        font-size: 1.1rem;
+    }
+
+    .videos-title { /* Mantido para fallback */
+        font-size: 2.5rem;
+    }
+    
+    .videos-subtitle { /* Mantido para fallback */
         font-size: 1.1rem;
     }
     
@@ -618,7 +727,7 @@
         font-size: 0.85rem;
     }
     
-    .featured-carousel {
+    .featured-carousel { /* Pode ser removido, pois agora temos .featured-carousel-secondary */
         grid-template-columns: 1fr;
         gap: 1.5rem;
     }
@@ -631,8 +740,14 @@
         min-width: 280px;
     }
     
-    .section-title {
-        font-size: 1.8rem;
+    .video-thumbnail {
+        /* height: 140px; */ /* Removido para usar aspect-ratio */
+    }
+    
+    .play-button {
+        width: 50px;
+        height: 50px;
+        font-size: 1.2rem;
     }
     
     .modal-content {
@@ -651,11 +766,19 @@
 }
 
 @media (max-width: 480px) {
-    .videos-header {
+    .main-featured-video-section {
         padding: 2rem 0;
     }
     
-    .videos-title {
+    .main-video-title {
+        font-size: 2rem;
+    }
+
+    .videos-header { /* Mantido para fallback */
+        padding: 2rem 0;
+    }
+    
+    .videos-title { /* Mantido para fallback */
         font-size: 2rem;
     }
     
@@ -669,7 +792,7 @@
     }
     
     .video-thumbnail {
-        height: 140px;
+        /* height: 140px; */ /* Removido para usar aspect-ratio */
     }
     
     .play-button {
@@ -692,14 +815,14 @@
 }
 
 .video-card,
-.featured-video-card,
+.featured-video-card-small, /* Atualizado */
 .social-card {
     animation: fadeInUp 0.6s ease forwards;
 }
 
 /* Estados de filtro */
 .video-card.hidden,
-.featured-video-card.hidden,
+.featured-video-card-small.hidden, /* Atualizado */
 .category-section.hidden {
     display: none;
 }
@@ -715,4 +838,3 @@
     0% { background-position: 200% 0; }
     100% { background-position: -200% 0; }
 }
-
