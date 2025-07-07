@@ -13,24 +13,21 @@ permalink: /videos/index.html
                         {# Usar video_id diretamente do front matter, se existir #}
                         {% set mainVideoId = mainFeaturedVideo.data.video_id %} 
                         {% if not mainVideoId %}
-                            {# Fallback: tentar extrair do video_url se video_id não existir (menos eficiente) #}
-                            {% set mainVideoId = mainFeaturedVideo.data.video_url | replace("https://www.youtube.com/watch?v=", "") | replace("https://youtu.be/", "") | replace("&.*", "") %}
+                            {# Fallback: tentar extrair do video_url se video_id não existir #}
+                            {% set mainVideoId = mainFeaturedVideo.data.video_url | extractYouTubeId %} {# Usando o filtro Eleventy #}
                         {% endif %}
 
                         <img src="https://img.youtube.com/vi/{{ mainVideoId }}/maxresdefault.jpg" 
                              alt="{{ mainFeaturedVideo.data.title }}" 
-                             onerror="this.src='https://img.youtube.com/vi/{{ mainVideoId }}/hqdefault.jpg'"> {# Usar hqdefault.jpg como fallback #}
-                        <div class="play-overlay">
-                            <div class="play-button">▶</div>
-                        </div>
+                             onerror="this.onerror=null; this.src='https://img.youtube.com/vi/{{ mainVideoId }}/hqdefault.jpg';"> 
                     {% endif %}
                 </div>
                 <div class="main-video-info">
                     <h1 class="main-video-title">{{ mainFeaturedVideo.data.title }}</h1>
                     <p class="main-video-description">{{ mainFeaturedVideo.data.description }}</p>
                     <div class="main-video-meta">
-                        <span class="main-video-category">{{ mainFeaturedVideo.data.category | replace("-", " ") | title }}</span>
-                        <span class="main-video-date">{{ mainFeaturedVideo.data.date | date("DD/MM/YYYY") }}</span>
+                        <span class="main-video-category">{{ mainFeaturedVideo.data.category | getCategoryName }}</span> {# Usando o novo filtro #}
+                        <span class="main-video-date">{{ mainFeaturedVideo.data.date | luxonDate("dd/MM/yyyy") }}</span> {# Usando o novo filtro #}
                     </div>
                     <div class="main-video-tags">
                         {% for tag in mainFeaturedVideo.data.tags %}
@@ -68,20 +65,42 @@ permalink: /videos/index.html
         <div class="container">
             <h2 class="section-title">Outros Vídeos em Destaque</h2>
             <div class="videos-carousel featured-carousel-secondary">
-                {% set additionalFeaturedVideos = collections.videos | where("data.featured", true) | reverse | slice(1, collections.videos | where("data.featured", true) | length) %}
+                {# Certifique-se de que additionalFeaturedVideos está retornando algo #}
+                {% set allFeaturedVideos = collections.videos | where("data.featured", true) | reverse %}
+                {% set additionalFeaturedVideos = allFeaturedVideos | slice(1, allFeaturedVideos.length) %}
                 {% for video in additionalFeaturedVideos %}
-                    <div class="video-card featured-video-card-small" data-category="{{ video.data.category }}">
+                    <div class="video-card featured-video-card-small" data-category="{{ video.data.category }}" data-title="{{ video.data.title | lower }}" data-description="{{ video.data.description | lower }}" data-tags="{{ video.data.tags | join(',') | lower }}">
                         <div class="video-thumbnail">
-                            {% if video.data.platform == "youtube" %}
+                            {% if video.data.custom_thumbnail %}
+                                <img src="{{ video.data.custom_thumbnail }}" 
+                                     alt="{{ video.data.title }}" 
+                                     loading="lazy">
+                            {% elif video.data.platform == "youtube" %}
                                 {# Usar video_id diretamente do front matter, se existir #}
                                 {% set videoId = video.data.video_id %} 
                                 {% if not videoId %}
-                                    {# Fallback: tentar extrair do video_url se video_id não existir (menos eficiente) #}
-                                    {% set videoId = video.data.video_url | replace("https://www.youtube.com/watch?v=", "") | replace("https://youtu.be/", "") | replace("&.*", "") %}
+                                    {# Fallback: tentar extrair do video_url se video_id não existir #}
+                                    {% set videoId = video.data.video_url | extractYouTubeId %}
                                 {% endif %}
                                 <img src="https://img.youtube.com/vi/{{ videoId }}/maxresdefault.jpg" 
                                      alt="{{ video.data.title }}" 
-                                     onerror="this.src='https://img.youtube.com/vi/{{ videoId }}/hqdefault.jpg'">
+                                     loading="lazy"
+                                     onerror="this.onerror=null; this.src='https://img.youtube.com/vi/{{ videoId }}/hqdefault.jpg';">
+                            {% elif video.data.video_url.includes("tiktok.com") %}
+                                <div class="tiktok-thumbnail">
+                                    <div class="tiktok-icon">🎵</div>
+                                    <span>TikTok</span>
+                                </div>
+                            {% elif video.data.video_url.includes("instagram.com") %}
+                                <div class="instagram-thumbnail">
+                                    <div class="instagram-icon">📸</div>
+                                    <span>Instagram</span>
+                                </div>
+                            {% else %}
+                                <div class="generic-thumbnail">
+                                    <div class="generic-icon">🎬</div>
+                                    <span>Vídeo</span>
+                                </div>
                             {% endif %}
                             <div class="play-overlay">
                                 <div class="play-button">▶</div>
@@ -94,10 +113,10 @@ permalink: /videos/index.html
                         </div>
                         <div class="video-info">
                             <h3 class="video-title">{{ video.data.title }}</h3>
-                            <p class="video-description">{{ video.data.description }}</p>
+                            <p class="video-description">{{ video.data.description | truncate(100) }}</p>
                             <div class="video-meta">
-                                <span class="video-category">{{ video.data.category | replace("-", " ") | title }}</span>
-                                <span class="video-date">{{ video.data.date | date("DD/MM/YYYY") }}</span>
+                                <span class="video-category">{{ video.data.category | getCategoryName }}</span>
+                                <span class="video-date">{{ video.data.date | luxonDate("dd/MM/yyyy") }}</span>
                             </div>
                             <div class="video-tags">
                                 {% for tag in video.data.tags %}
@@ -189,7 +208,7 @@ permalink: /videos/index.html
         <div class="container">
             <h2 class="section-title">Siga-nos nas Redes Sociais</h2>
             <div class="social-grid">
-                <a href="https://www.youtube.com/silkmachine" target="_blank" class="social-card youtube">
+                <a href="https://www.youtube.com/@silkmachine" target="_blank" class="social-card youtube">
                     <div class="social-icon">📺</div>
                     <h3>YouTube</h3>
                     <p>Vídeos completos e tutoriais detalhados</p>

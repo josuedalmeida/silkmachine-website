@@ -5,10 +5,12 @@ module.exports = function(eleventyConfig) {
     eleventyConfig.addPassthroughCopy("src/images");
     eleventyConfig.addPassthroughCopy("src/admin");
 	
-	// Adiciona um filtro de data personalizado
-    eleventyConfig.addFilter("dateFormat", function(dateObj, format) {
-        const luxon = require('luxon'); // Certifique-se de ter luxon instalado (npm install luxon)
-        return luxon.DateTime.fromJSDate(dateObj).toFormat(format);
+	// Adiciona um filtro de data personalizado (renomeado para evitar conflito)
+    eleventyConfig.addFilter("luxonDate", function(dateObj, format) { // Renomeado
+        const { DateTime } = require('luxon'); // Desestruturação para melhor prática
+        // Garante que a entrada seja um objeto Date ou uma string ISO válida
+        const date = dateObj instanceof Date ? dateObj : new Date(dateObj);
+        return DateTime.fromJSDate(date).toFormat(format);
     });
 
     // Adiciona filtros necessários para a página de vídeos
@@ -33,34 +35,54 @@ module.exports = function(eleventyConfig) {
     });
 
     eleventyConfig.addFilter("replace", function(str, search, replace) {
+        // Usa uma expressão regular para substituir todas as ocorrências
         return str.replace(new RegExp(search, 'g'), replace);
     });
 
     eleventyConfig.addFilter("title", function(str) {
+        if (!str) return '';
         return str.replace(/\w\S*/g, (txt) => 
             txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
         );
     });
 
     eleventyConfig.addFilter("join", function(array, separator) {
+        if (!array) return ''; // Retorna string vazia para array nulo/indefinido
         return array.join(separator || ',');
     });
 
     eleventyConfig.addFilter("padStart", function(str, length, pad) {
+        if (str === null || str === undefined) return '';
         return str.toString().padStart(length, pad);
     });
 
-    eleventyConfig.addFilter("date", function(dateObj, format) {
-        const luxon = require('luxon');
-        return luxon.DateTime.fromJSDate(new Date(dateObj)).toFormat(format);
-    });
+    // REMOVIDO: eleventyConfig.addFilter("date", function(dateObj, format) { ... });
+    // Use luxonDate no lugar.
 
+    // FILTRO extractYouTubeId OTIMIZADO PARA SER USADO NO NUNJUCKS
     eleventyConfig.addFilter("extractYouTubeId", function(url) {
         if (!url) return null;
-        const regex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
-        const match = url.match(regex);
-        return match ? match[1] : null;
+        const patterns = [
+            /(?:youtube\.com\/shorts\/)([a-zA-Z0-9_-]+)/,
+            /(?:youtube\.com\/watch\?v=)([a-zA-Z0-9_-]+)/,
+            /(?:youtu\.be\/)([a-zA-Z0-9_-]+)/,
+            /(?:youtube\.com\/embed\/)([a-zA-Z0-9_-]+)/,
+            /(?:youtube\.com\/v\/)([a-zA-Z0-9_-]+)/, // Adicionado
+            /(?:youtube\.com\/.*[?&]v=)([a-zA-Z0-9_-]{11})/, // Mais genérico
+        ];
+        
+        for (const pattern of patterns) {
+            const match = url.match(pattern);
+            if (match) return match[1];
+        }
+        // Fallback para IDs puros se a URL for apenas o ID
+        const possibleId = url.replace(/.*[\/=]/, '').replace(/[?&].*/, '');
+        if (possibleId && possibleId.length === 11 && /^[a-zA-Z0-9_-]+$/.test(possibleId)) {
+            return possibleId;
+        }
+        return null;
     });
+
 
     eleventyConfig.addFilter("getCategoryName", function(category) {
         const categoryNames = {
@@ -68,7 +90,8 @@ module.exports = function(eleventyConfig) {
             'depoimentos': '💬 Depoimentos',
             'treinamentos': '🎓 Treinamentos',
             'dicas-negocio': '💡 Dicas de Negócio',
-            'tutoriais': '📚 Tutoriais'
+            'tutoriais': '📚 Tutoriais',
+            'novidades': '📢 Novidades' // Adicionado
         };
         return categoryNames[category] || category;
     });
@@ -87,8 +110,7 @@ module.exports = function(eleventyConfig) {
     return {
         dir: {
             input: "src",
-            includes: "_includes", // Mantenha esta linha
-            // REMOVA ESTA LINHA: layouts: "_includes/layouts", 
+            includes: "_includes",
             data: "_data",
             output: "_site"
         },

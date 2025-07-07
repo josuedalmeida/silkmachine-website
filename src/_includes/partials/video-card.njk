@@ -8,8 +8,8 @@
             {# PRIORIZA O video_id DO FRONT MATTER #}
             {% set videoId = video.data.video_id %} 
             {% if not videoId %}
-                {# FALLBACK: tenta extrair do video_url se video_id não estiver disponível (menos ideal) #}
-                {% set videoId = video.data.video_url | replace("https://www.youtube.com/watch?v=", "") | replace("https://youtu.be/", "") | replace("https://www.youtube.com/embed/", "") | replace("?.*", "") | replace("&.*", "") %}
+                {# FALLBACK: tenta extrair do video_url se video_id não estiver disponível #}
+                {% set videoId = video.data.video_url | extractYouTubeId %} {# Usando o filtro Eleventy #}
             {% endif %}
 
             <img src="https://img.youtube.com/vi/{{ videoId }}/maxresdefault.jpg" 
@@ -48,7 +48,7 @@
         {% endif %}
         
         {% if video.data.featured %}
-        <div class="featured-badge">⭐ Destaque</div> {# Usando a classe 'featured-badge' que você tem no CSS #}
+        <div class="featured-badge">⭐ Destaque</div>
         {% endif %}
     </div>
     
@@ -57,15 +57,9 @@
         <p class="video-description">{{ video.data.description | truncate(100) }}</p>
         <div class="video-meta">
             <span class="video-category">
-                {% if video.data.category == "demonstracoes" %}🎬 Demonstrações
-                {% elif video.data.category == "depoimentos" %}💬 Depoimentos
-                {% elif video.data.category == "treinamentos" %}🎓 Treinamentos
-                {% elif video.data.category == "dicas-negocio" %}💡 Dicas de Negócio
-                {% elif video.data.category == "novidades" %}📢 Novidades
-                {% else %}{{ video.data.category | replace("-", " ") | title }}
-                {% endif %}
+                {{ video.data.category | getCategoryName }} {# Usando o novo filtro #}
             </span>
-            <span class="video-date">{{ video.data.date | date("DD/MM/YYYY") }}</span>
+            <span class="video-date">{{ video.data.date | luxonDate("dd/MM/yyyy") }}</span> {# Usando o novo filtro #}
         </div>
         {% if video.data.tags %}
         <div class="video-tags">
