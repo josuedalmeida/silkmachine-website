@@ -30,6 +30,7 @@ module.exports = function(eleventyConfig) {
                 }
             }
             return itemValue === value;
+		});
     });
 
     eleventyConfig.addFilter("reverse", function(array) {
