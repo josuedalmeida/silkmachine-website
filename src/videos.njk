@@ -31,7 +31,7 @@ permalink: /videos/index.html
 
         <h3 style="color: #1976d2;">Teste de Filtro 'Featured':</h3>
         {% set featuredCheck = collections.videos | where("data.featured", true) %}
-        <p><strong>Número de vídeos `featured: true`:</strong> {{ featuredCheck | length }}</p>
+        <p><strong>Número de vídeos `featured: true`:</strong> {{ collections.videos | filterFeaturedVideos | length }}</p>
         {% if featuredCheck | length > 0 %}
             <p>Primeiro vídeo `featured`: {{ featuredCheck[0].data.title }}</p>
         {% else %}
@@ -67,7 +67,7 @@ permalink: /videos/index.html
 
     <div class="main-featured-video-section">
         <div class="container">
-            {% set mainFeaturedVideo = collections.videos | where("data.featured", true) | first %}
+            {% set mainFeaturedVideo = collections.videos | filterFeaturedVideos | first %}
             {% if mainFeaturedVideo %}
                 <div class="main-video-player">
                     {% if mainFeaturedVideo.data.platform == "youtube" %}
