@@ -19,7 +19,7 @@ permalink: /videos/index.html
                         <p><strong>URL do Vídeo:</strong> {{ video.data.video_url }}</p>
                         <p><strong>ID do Vídeo (Front Matter):</strong> {{ video.data.video_id }}</p>
                         <p><strong>Categoria:</strong> {{ video.data.category }}</p>
-                        <p><strong>Em Destaque (Featured):</strong> {{ video.data.featured }}</p>
+                        <p><strong>Em Destaque (Featured):</strong> {{ video.data.featured }} (Tipo: {{ video.data.featured | typeOf }})</p>
                         <p><strong>Caminho do Arquivo:</strong> {{ video.inputPath }}</p>
                         <p><strong>URL da Página Gerada:</strong> <a href="{{ video.url }}" target="_blank">{{ video.url }}</a></p>
                     </li>

@@ -69,6 +69,10 @@ module.exports = function(eleventyConfig) {
         if (str === null || str === undefined) return '';
         return str.toString().padStart(length, pad);
     });
+	
+	eleventyConfig.addFilter("typeOf", function(value) {
+        return typeof value;
+    });
 
     // REMOVIDO: eleventyConfig.addFilter("date", function(dateObj, format) { ... });
     // Use luxonDate no lugar.
