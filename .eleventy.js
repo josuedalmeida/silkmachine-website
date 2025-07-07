@@ -15,21 +15,24 @@ module.exports = function(eleventyConfig) {
 
     // Adiciona filtros necessários para a página de vídeos
     eleventyConfig.addFilter("where", function(array, key, value) {
-        if (!array) return [];
+        if (!array) return []; // Retorna array vazio se a entrada não for um array
         return array.filter(item => {
-            if (!item.data || !(key in item.data)) {
-                return false;
-            }
-            let itemValue = item.data[key];
-
-            // Tratamento especial para valores booleanos
-            if (typeof value === 'boolean') {
-                // Converte string "true"/"false" para booleano para comparação
-                if (typeof itemValue === 'string') {
-                    itemValue = (itemValue.toLowerCase() === 'true');
+            // Garante que 'item.data' e a 'key' existam no item
+            if (item.data && key in item.data) {
+                // Se o valor procurado for explicitamente booleano true
+                if (value === true) {
+                    // Retorna o item se a propriedade for estritamente booleana true
+                    return item.data[key] === true;
                 }
+                // Se o valor procurado for explicitamente booleano false
+                if (value === false) {
+                    // Retorna o item se a propriedade for estritamente booleana false
+                    return item.data[key] === false;
+                }
+                // Para outros tipos de valores (string, número, etc.), usa a comparação estrita padrão
+                return item.data[key] === value;
             }
-            return itemValue === value;
+            return false; // Exclui itens que não possuem a estrutura de dados esperada
 		});
     });
 
@@ -70,9 +73,6 @@ module.exports = function(eleventyConfig) {
         return str.toString().padStart(length, pad);
     });
 	
-	eleventyConfig.addFilter("typeOf", function(value) {
-        return typeof value;
-    });
 
     // REMOVIDO: eleventyConfig.addFilter("date", function(dateObj, format) { ... });
     // Use luxonDate no lugar.
