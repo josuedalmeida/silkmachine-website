@@ -3,28 +3,6 @@ layout: layouts/base.njk
 title: Vídeos - Silk Machine
 permalink: /videos/index.html
 ---
-{# LINHAS DE DEPURACAO - REMOVA DEPOIS DE RESOLVER O PROBLEMA #}
-<div style="background-color: #ffe0b2; padding: 10px; margin-bottom: 20px; border: 1px solid #ff9800;">
-    <p><strong>DEBUG:</strong></p>
-    <p>Número total de vídeos na coleção: {{ collections.videos | length }}</p>
-    {% if collections.videos | length > 0 %}
-        <p>Primeiro vídeo na coleção:</p>
-        <pre>{{ collections.videos[0].data | dump | safe }}</pre>
-        <p>Featured do primeiro vídeo: {{ collections.videos[0].data.featured }} (Tipo: {{ collections.videos[0].data.featured | typeOf }})</p>
-        <p>Categoria do primeiro vídeo: {{ collections.videos[0].data.category }}</p>
-    {% else %}
-        <p>A coleção 'videos' está vazia ou não foi carregada.</p>
-    {% endif %}
-    {% set featuredCount = collections.videos | where("data.featured", true) | length %}
-    <p>Número de vídeos 'featured': {{ featuredCount }}</p>
-    {% set firstFeatured = collections.videos | where("data.featured", true) | first %}
-    {% if firstFeatured %}
-        <p>Primeiro vídeo 'featured': {{ firstFeatured.data.title }}</p>
-    {% else %}
-        <p>Nenhum vídeo 'featured' encontrado.</p>
-    {% endif %}
-</div>
-{# FIM DAS LINHAS DE DEPURACAO #}
 
 <div class="videos-page">
     <div class="main-featured-video-section">
