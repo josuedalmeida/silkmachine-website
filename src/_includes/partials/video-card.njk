@@ -1,31 +1,32 @@
 <div class="video-card" data-category="{{ video.data.category }}" data-tags="{{ video.data.tags | join(',') }}" data-title="{{ video.data.title | lower }}" data-description="{{ video.data.description | lower }}">
     <div class="video-thumbnail">
         {% if video.data.custom_thumbnail %}
-            <!-- Thumbnail personalizada -->
             <img src="{{ video.data.custom_thumbnail }}" 
                  alt="{{ video.data.title }}" 
                  loading="lazy">
-        {% elif video.data.platform == "youtube" or video.data.video_url.includes("youtube.com") or video.data.video_url.includes("youtu.be") %}
-            <!-- Thumbnail do YouTube com melhor qualidade -->
-            {% set videoId = video.data.video_url | replace("https://www.youtube.com/shorts/", "") | replace("https://www.youtube.com/watch?v=", "") | replace("https://youtu.be/", "") | replace("?.*", "") | replace("&.*", "") %}
+        {% elif video.data.platform == "youtube" %}
+            {# PRIORIZA O video_id DO FRONT MATTER #}
+            {% set videoId = video.data.video_id %} 
+            {% if not videoId %}
+                {# FALLBACK: tenta extrair do video_url se video_id não estiver disponível (menos ideal) #}
+                {% set videoId = video.data.video_url | replace("https://www.youtube.com/watch?v=", "") | replace("https://youtu.be/", "") | replace("https://www.youtube.com/embed/", "") | replace("?.*", "") | replace("&.*", "") %}
+            {% endif %}
+
             <img src="https://img.youtube.com/vi/{{ videoId }}/maxresdefault.jpg" 
                  alt="{{ video.data.title }}" 
                  loading="lazy"
                  onerror="this.onerror=null; this.src='https://img.youtube.com/vi/{{ videoId }}/hqdefault.jpg';">
         {% elif video.data.video_url.includes("tiktok.com") %}
-            <!-- Placeholder para TikTok -->
             <div class="tiktok-thumbnail">
                 <div class="tiktok-icon">🎵</div>
                 <span>TikTok</span>
             </div>
         {% elif video.data.video_url.includes("instagram.com") %}
-            <!-- Placeholder para Instagram -->
             <div class="instagram-thumbnail">
                 <div class="instagram-icon">📸</div>
                 <span>Instagram</span>
             </div>
         {% else %}
-            <!-- Placeholder genérico -->
             <div class="generic-thumbnail">
                 <div class="generic-icon">🎬</div>
                 <span>Vídeo</span>
@@ -47,7 +48,7 @@
         {% endif %}
         
         {% if video.data.featured %}
-        <div class="video-badge">⭐ Destaque</div>
+        <div class="featured-badge">⭐ Destaque</div> {# Usando a classe 'featured-badge' que você tem no CSS #}
         {% endif %}
     </div>
     
@@ -75,7 +76,7 @@
         {% endif %}
     </div>
     
-    <button class="watch-btn" onclick="openVideoModal('{{ video.data.video_url }}', '{{ video.data.title }}')">
+    <button class="watch-btn" data-video-url="{{ video.data.video_url }}" data-video-title="{{ video.data.title }}">
         <span class="btn-icon">▶</span>
         Assistir
     </button>
