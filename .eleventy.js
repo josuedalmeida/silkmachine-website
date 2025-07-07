@@ -14,9 +14,24 @@ module.exports = function(eleventyConfig) {
     });
 
     // Adiciona filtros necessários para a página de vídeos
-    eleventyConfig.addFilter("where", function(array, key, value) {
-        if (!array) return [];
-        return array.filter(item => item.data && item.data[key] === value);
+	 eleventyConfig.addFilter("where", function(array, key, value) {
+			if (!array) return [];
+			return array.filter(item => {
+				if (!item.data || !(key in item.data)) {
+					return false;
+				}
+				let itemValue = item.data[key];
+
+				// Tratamento especial para valores booleanos
+				if (typeof value === 'boolean') {
+					// Converte string "true"/"false" para booleano para comparação
+					if (typeof itemValue === 'string') {
+						itemValue = (itemValue.toLowerCase() === 'true');
+					}
+				}
+				return itemValue === value;
+			});
+		});
     });
 
     eleventyConfig.addFilter("reverse", function(array) {
