@@ -1,9 +1,6 @@
----
 layout: layouts/base.njk
-title: "Vídeos - Silk Machine"
-description: "Central de vídeos da Silk Machine - Descubra todo o potencial da K3-350"
+title: Vídeos - Silk Machine
 permalink: /videos/index.html
----
 
 <div class="videos-page">
     <div class="main-featured-video-section">
@@ -12,10 +9,16 @@ permalink: /videos/index.html
             {% if mainFeaturedVideo %}
                 <div class="main-video-player">
                     {% if mainFeaturedVideo.data.platform == "youtube" %}
-                        {% set mainVideoId = mainFeaturedVideo.data.video_url | replace("https://www.youtube.com/shorts/", "") | replace("https://www.youtube.com/watch?v=", "") | replace("https://youtu.be/", "") | replace("?.*", "") %}
+                        {# Usar video_id diretamente do front matter, se existir #}
+                        {% set mainVideoId = mainFeaturedVideo.data.video_id %} 
+                        {% if not mainVideoId %}
+                            {# Fallback: tentar extrair do video_url se video_id não existir (menos eficiente) #}
+                            {% set mainVideoId = mainFeaturedVideo.data.video_url | replace("https://www.youtube.com/watch?v=", "") | replace("https://youtu.be/", "") | replace("&.*", "") %}
+                        {% endif %}
+
                         <img src="https://img.youtube.com/vi/{{ mainVideoId }}/maxresdefault.jpg" 
                              alt="{{ mainFeaturedVideo.data.title }}" 
-                             onerror="this.src='https://img.youtube.com/vi/{{ mainVideoId }}/hqdefault.jpg'">
+                             onerror="this.src='https://img.youtube.com/vi/{{ mainVideoId }}/hqdefault.jpg'"> {# Usar hqdefault.jpg como fallback #}
                         <div class="play-overlay">
                             <div class="play-button">▶</div>
                         </div>
@@ -63,13 +66,18 @@ permalink: /videos/index.html
     <section class="featured-videos">
         <div class="container">
             <h2 class="section-title">Outros Vídeos em Destaque</h2>
-            <div class="videos-carousel featured-carousel-secondary"> {# Usando videos-carousel para garantir horizontalidade #}
-                {% set additionalFeaturedVideos = collections.videos | where("data.featured", true) | reverse | slice(1, collections.videos | where("data.featured", true) | length) %} {# Pega todos exceto o primeiro #}
+            <div class="videos-carousel featured-carousel-secondary">
+                {% set additionalFeaturedVideos = collections.videos | where("data.featured", true) | reverse | slice(1, collections.videos | where("data.featured", true) | length) %}
                 {% for video in additionalFeaturedVideos %}
                     <div class="video-card featured-video-card-small" data-category="{{ video.data.category }}">
                         <div class="video-thumbnail">
                             {% if video.data.platform == "youtube" %}
-                                {% set videoId = video.data.video_url | replace("https://www.youtube.com/shorts/", "") | replace("https://www.youtube.com/watch?v=", "") | replace("https://youtu.be/", "") | replace("?.*", "") %}
+                                {# Usar video_id diretamente do front matter, se existir #}
+                                {% set videoId = video.data.video_id %} 
+                                {% if not videoId %}
+                                    {# Fallback: tentar extrair do video_url se video_id não existir (menos eficiente) #}
+                                    {% set videoId = video.data.video_url | replace("https://www.youtube.com/watch?v=", "") | replace("https://youtu.be/", "") | replace("&.*", "") %}
+                                {% endif %}
                                 <img src="https://img.youtube.com/vi/{{ videoId }}/maxresdefault.jpg" 
                                      alt="{{ video.data.title }}" 
                                      onerror="this.src='https://img.youtube.com/vi/{{ videoId }}/hqdefault.jpg'">
@@ -180,7 +188,7 @@ permalink: /videos/index.html
         <div class="container">
             <h2 class="section-title">Siga-nos nas Redes Sociais</h2>
             <div class="social-grid">
-                <a href="https://www.youtube.com/@silkmachine/videos" target="_blank" class="social-card youtube">
+                <a href="https://www.youtube.com/silkmachine" target="_blank" class="social-card youtube">
                     <div class="social-icon">📺</div>
                     <h3>YouTube</h3>
                     <p>Vídeos completos e tutoriais detalhados</p>
@@ -204,4 +212,3 @@ permalink: /videos/index.html
         </div>
     </section>
 </div>
-
