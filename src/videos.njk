@@ -5,46 +5,13 @@ permalink: /videos/index.html
 ---
 
 <div class="videos-page">
-    {# INÍCIO DAS LINHAS DE DEPURACAO - REMOVA DEPOIS DE RESOLVER O PROBLEMA #}
-    <div style="background-color: #e3f2fd; padding: 15px; margin-bottom: 20px; border: 1px solid #90caf9; color: #212121;">
-        <h2 style="color: #1976d2;">DEBUG DA COLEÇÃO DE VÍDEOS:</h2>
-        <p><strong>Número total de vídeos na coleção `collections.videos`:</strong> {{ collections.videos | length }}</p>
-
-        {% if collections.videos | length > 0 %}
-            <h3 style="color: #1976d2;">Detalhes dos Vídeos Encontrados:</h3>
-            <ul style="list-style: none; padding: 0;">
-                {% for video in collections.videos %}
-                    <li style="border-bottom: 1px dashed #bbdefb; padding: 10px 0; margin-bottom: 10px;">
-                        <p><strong>Título:</strong> {{ video.data.title }}</p>
-                        <p><strong>URL do Vídeo:</strong> {{ video.data.video_url }}</p>
-                        <p><strong>ID do Vídeo (Front Matter):</strong> {{ video.data.video_id }}</p>
-                        <p><strong>Categoria:</strong> {{ video.data.category }}</p>
-                        <p><strong>Em Destaque (Featured):</strong> {{ video.data.featured }}</p>
-                        <p><strong>Caminho do Arquivo:</strong> {{ video.inputPath }}</p>
-                        <p><strong>URL da Página Gerada:</strong> <a href="{{ video.url }}" target="_blank">{{ video.url }}</a></p>
-                    </li>
-                {% endfor %}
-            </ul>
-        {% else %}
-            <p style="color: #d32f2f; font-weight: bold;">A coleção `collections.videos` está vazia. Nenhum arquivo Markdown de vídeo foi encontrado ou processado.</p>
-        {% endif %}
-
-        <h3 style="color: #1976d2;">Teste de Filtro 'Featured':</h3>
-        {% set featuredCheck = collections.videos | where("data.featured", true) %}
-        <p><strong>Número de vídeos `featured: true`:</strong> {{ collections.videos | filterFeaturedVideos | length }}</p>
-        {% if featuredCheck | length > 0 %}
-            <p>Primeiro vídeo `featured`: {{ featuredCheck[0].data.title }}</p>
-        {% else %}
-            <p style="color: #d32f2f;">Nenhum vídeo marcado como `featured: true` encontrado usando o filtro `where`.</p>
-        {% endif %}
-    </div>
-    {# FIM DAS LINHAS DE DEPURACAO #}
-
+    <!-- Header da página -->
     <div class="videos-header">
         <div class="container">
             <h1 class="videos-title">Central de Vídeos</h1>
             <p class="videos-subtitle">Descubra todo o potencial da K3-350 através dos nossos vídeos</p>
             
+            <!-- Filtros e busca -->
             <div class="videos-controls">
                 <div class="search-box">
                     <input type="text" id="video-search" placeholder="Buscar vídeos..." />
@@ -59,190 +26,140 @@ permalink: /videos/index.html
                     <button class="filter-btn" data-category="dicas-negocio">Dicas de Negócio</button>
                     <button class="filter-btn" data-category="tutoriais">Tutoriais</button>
                     <button class="filter-btn" data-category="novidades">Novidades</button>
-                    <button class="filter-btn" data-category="cursos">Cursos</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="main-featured-video-section">
+    <!-- Vídeos em destaque -->
+    <section class="featured-videos">
         <div class="container">
-            {% set mainFeaturedVideo = collections.videos | filterFeaturedVideos | first %}
-            {% if mainFeaturedVideo %}
-                <div class="main-video-player">
-                    {% if mainFeaturedVideo.data.platform == "youtube" %}
-                        {# Usar video_id diretamente do front matter, se existir #}
-                        {% set mainVideoId = mainFeaturedVideo.data.video_id %} 
-                        {% if not mainVideoId %}\
-                            {# Fallback: tentar extrair do video_url se video_id não existir #}
-                            {% set mainVideoId = mainFeaturedVideo.data.video_url | extractYouTubeId %} {# Usando o filtro Eleventy #}
-                        {% endif %}\
-
-                        <img src="https://img.youtube.com/vi/{{ mainVideoId }}/maxresdefault.jpg" 
-                             alt="{{ mainFeaturedVideo.data.title }}" 
-                             onerror="this.onerror=null; this.src='https://img.youtube.com/vi/{{ mainVideoId }}/hqdefault.jpg';"> 
-                        <button class="play-button" data-video-id="{{ mainVideoId }}" data-video-platform="{{ mainFeaturedVideo.data.platform }}" data-video-title="{{ mainFeaturedVideo.data.title }}" data-video-description="{{ mainFeaturedVideo.data.description | striptags }}">▶️</button>
-                    {% elif mainFeaturedVideo.data.video_url.includes("tiktok.com") %}
-                        <div class="tiktok-main-thumbnail">
-                            <div class="tiktok-icon">🎵</div>
-                            <span>Assista no TikTok</span>
-                        </div>
-                         <button class="play-button" data-video-id="{{ mainFeaturedVideo.data.video_url }}" data-video-platform="tiktok" data-video-title="{{ mainFeaturedVideo.data.title }}" data-video-description="{{ mainFeaturedVideo.data.description | striptags }}">▶️</button>
-                    {% elif mainFeaturedVideo.data.video_url.includes("instagram.com") %}
-                        <div class="instagram-main-thumbnail">
-                            <div class="instagram-icon">📸</div>
-                            <span>Assista no Instagram</span>
-                        </div>
-                        <button class="play-button" data-video-id="{{ mainFeaturedVideo.data.video_url }}" data-video-platform="instagram" data-video-title="{{ mainFeaturedVideo.data.title }}" data-video-description="{{ mainFeaturedVideo.data.description | striptags }}">▶️</button>
-                    {% elif mainFeaturedVideo.data.video_url.includes("facebook.com") %}
-                        <div class="facebook-main-thumbnail">
-                            <div class="facebook-icon">👥</div>
-                            <span>Assista no Facebook</span>
-                        </div>
-                        <button class="play-button" data-video-id="{{ mainFeaturedVideo.data.video_url }}" data-video-platform="facebook" data-video-title="{{ mainFeaturedVideo.data.title }}" data-video-description="{{ mainFeaturedVideo.data.description | striptags }}">▶️</button>
-                    {% else %}
-                        <img src="/images/video-placeholder.jpg" alt="Vídeo não disponível" class="placeholder-thumbnail">
-                        <button class="play-button disabled">▶️</button>
-                    {% endif %}
-                </div>
-                <div class="main-video-info">
-                    <h1 class="main-video-title">{{ mainFeaturedVideo.data.title }}</h1>
-                    <p class="main-video-description">{{ mainFeaturedVideo.data.description }}</p>
-                    <div class="main-video-meta">
-                        <span class="main-video-category">
-                            {{ mainFeaturedVideo.data.category | getCategoryName }}
-                        </span>
-                        <span class="main-video-date">{{ mainFeaturedVideo.data.date | luxonDate("dd/MM/yyyy") }}</span>
-                        {% if mainFeaturedVideo.data.duration %}
-                        <span class="main-video-duration">
-                            {% if mainFeaturedVideo.data.duration >= 60 %}
-                                {{ (mainFeaturedVideo.data.duration / 60) | round }}:{{ (mainFeaturedVideo.data.duration % 60) | string | padStart(2, "0") }} min
-                            {% else %}
-                                {{ mainFeaturedVideo.data.duration }}s
-                            {% endif %}
-                        </span>
+            <h2 class="section-title">Vídeos em Destaque</h2>
+            <div class="featured-carousel">
+                {% set featuredVideos = collections.videos | where("data.featured", true) | reverse %}
+                {% for video in featuredVideos %}
+                <div class="featured-video-card" data-category="{{ video.data.category }}">
+                    <div class="video-thumbnail">
+                        {% if video.data.platform == "youtube" %}
+                            {% set videoId = video.data.video_url | replace("https://www.youtube.com/shorts/", "") | replace("https://www.youtube.com/watch?v=", "") | replace("https://youtu.be/", "") | replace("?.*", "") %}
+                            <img src="https://img.youtube.com/vi/{{ videoId }}/maxresdefault.jpg" 
+                                 alt="{{ video.data.title }}" 
+                                 onerror="this.src='https://img.youtube.com/vi/{{ videoId }}/hqdefault.jpg'">
                         {% endif %}
+                        <div class="play-overlay">
+                            <div class="play-button">▶</div>
+                        </div>
+                        <div class="video-duration">
+                            {% if video.data.duration %}
+                                {{ (video.data.duration / 60) | round }}:{{ (video.data.duration % 60) | string | padStart(2, "0") }}
+                            {% endif %}
+                        </div>
                     </div>
-                    {% if mainFeaturedVideo.data.tags %}
-                    <div class="main-video-tags">
-                        {% for tag in mainFeaturedVideo.data.tags | slice(0, 3) %}
-                            <span class="tag">#{{ tag }}</span>
-                        {% endfor %}
+                    <div class="video-info">
+                        <h3 class="video-title">{{ video.data.title }}</h3>
+                        <p class="video-description">{{ video.data.description }}</p>
+                        <div class="video-meta">
+                            <span class="video-category">{{ video.data.category | replace("-", " ") | title }}</span>
+                            <span class="video-date">{{ video.data.date | date("DD/MM/YYYY") }}</span>
+                        </div>
+                        <div class="video-tags">
+                            {% for tag in video.data.tags %}
+                                <span class="tag">#{{ tag }}</span>
+                            {% endfor %}
+                        </div>
                     </div>
-                    {% endif %}
+                    <button class="watch-btn" data-video-url="{{ video.data.video_url }}" data-video-title="{{ video.data.title }}">
+                        Assistir Vídeo
+                    </button>
                 </div>
-            {% else %}
-                {% endif %}
-        </div>
-    </div>
-    
-    <section class="videos-carousel-section">
-        <div class="container">
-            <h2 class="section-title">Outros Vídeos em Destaque</h2>
-            <div class="videos-carousel" id="featured-videos-carousel">
-                {% set allFeaturedVideos = collections.videos | where("data.featured", true) %}
-                {% set additionalFeaturedVideos = allFeaturedVideos | slice(1, allFeaturedVideos.length) %}
-                {% for video in additionalFeaturedVideos %}
-                    {% include "partials/video-card.njk" %}
                 {% endfor %}
             </div>
-            <button class="scroll-left" data-target="featured-videos-carousel">‹</button>
-            <button class="scroll-right" data-target="featured-videos-carousel">›</button>
         </div>
     </section>
 
-    <nav class="video-categories-nav">
+    <!-- Seções por categoria -->
+    <section class="category-sections">
         <div class="container">
-            <ul class="nav-list">
-                <li class="nav-item active" data-category="all">Todos</li>
-                <li class="nav-item" data-category="demonstracoes">Demonstrações</li>
-                <li class="nav-item" data-category="depoimentos">Depoimentos</li>
-                <li class="nav-item" data-category="treinamentos">Treinamentos</li>
-                <li class="nav-item" data-category="dicas-negocio">Dicas de Negócio</li>
-                <li class="nav-item" data-category="tutoriais">Tutoriais</li>
-                <li class="nav-item" data-category="novidades">Novidades</li>
-            </ul>
+            
+            <!-- Demonstrações -->
+            <div class="category-section" data-category="demonstracoes">
+                <h2 class="section-title">
+                    <span class="category-icon">🎬</span>
+                    Demonstrações
+                </h2>
+                <div class="videos-carousel">
+                    {% set demonstracoes = collections.videos | where("data.category", "demonstracoes") | reverse %}
+                    {% for video in demonstracoes %}
+                        {% include "partials/video-card.njk" %}
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Depoimentos -->
+            <div class="category-section" data-category="depoimentos">
+                <h2 class="section-title">
+                    <span class="category-icon">💬</span>
+                    Depoimentos
+                </h2>
+                <div class="videos-carousel">
+                    {% set depoimentos = collections.videos | where("data.category", "depoimentos") | reverse %}
+                    {% for video in depoimentos %}
+                        {% include "partials/video-card.njk" %}
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Treinamentos -->
+            <div class="category-section" data-category="treinamentos">
+                <h2 class="section-title">
+                    <span class="category-icon">🎓</span>
+                    Treinamentos
+                </h2>
+                <div class="videos-carousel">
+                    {% set treinamentos = collections.videos | where("data.category", "treinamentos") | reverse %}
+                    {% for video in treinamentos %}
+                        {% include "partials/video-card.njk" %}
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Dicas de Negócio -->
+            <div class="category-section" data-category="dicas-negocio">
+                <h2 class="section-title">
+                    <span class="category-icon">💡</span>
+                    Dicas de Negócio
+                </h2>
+                <div class="videos-carousel">
+                    {% set dicasNegocio = collections.videos | where("data.category", "dicas-negocio") | reverse %}
+                    {% for video in dicasNegocio %}
+                        {% include "partials/video-card.njk" %}
+                    {% endfor %}
+                </div>
+            </div>
+
         </div>
-    </nav>
+    </section>
 
-    <div class="videos-grid-container container">
-        <section class="category-section" data-category="demonstracoes">
-            <h3 class="category-title">Demonstrações <span class="category-count"></span></h3>
-            <div class="videos-grid">
-                {% set demonstracoes = collections.videos | where("data.category", "demonstracoes") | reverse %}
-                {% for video in demonstracoes %}
-                    {% include "partials/video-card.njk" %}
-                {% endfor %}
-            </div>
-        </section>
-
-        <section class="category-section" data-category="depoimentos">
-            <h3 class="category-title">Depoimentos <span class="category-count"></span></h3>
-            <div class="videos-grid">
-                {% set depoimentos = collections.videos | where("data.category", "depoimentos") | reverse %}
-                {% for video in depoimentos %}
-                    {% include "partials/video-card.njk" %}
-                {% endfor %}
-            </div>
-        </section>
-
-        <section class="category-section" data-category="treinamentos">
-            <h3 class="category-title">Treinamentos <span class="category-count"></span></h3>
-            <div class="videos-grid">
-                {% set treinamentos = collections.videos | where("data.category", "treinamentos") | reverse %}
-                {% for video in treinamentos %}
-                    {% include "partials/video-card.njk" %}
-                {% endfor %}
-            </div>
-        </section>
-
-        <section class="category-section" data-category="dicas-negocio">
-            <h3 class="category-title">Dicas de Negócio <span class="category-count"></span></h3>
-            <div class="videos-grid">
-                {% set dicasNegocio = collections.videos | where("data.category", "dicas-negocio") | reverse %}
-                {% for video in dicasNegocio %}
-                    {% include "partials/video-card.njk" %}
-                {% endfor %}
-            </div>
-        </section>
-
-        <section class="category-section" data-category="tutoriais">
-            <h3 class="category-title">Tutoriais <span class="category-count"></span></h3>
-            <div class="videos-grid">
-                {% set tutoriais = collections.videos | where("data.category", "tutoriais") | reverse %}
-                {% for video in tutoriais %}
-                    {% include "partials/video-card.njk" %}
-                {% endfor %}
-            </div>
-        </section>
-
-        <section class="category-section" data-category="novidades">
-            <h3 class="category-title">Novidades <span class="category-count"></span></h3>
-            <div class="videos-grid">
-                {% set novidades = collections.videos | where("data.category", "novidades") | reverse %}
-                {% for video in novidades %}
-                    {% include "partials/video-card.njk" %}
-                {% endfor %}
-            </div>
-        </section>
-    </div>
-
-    <div id="video-modal" class="modal-overlay">
+    <!-- Modal do player de vídeo -->
+    <div id="video-modal" class="video-modal">
+        <div class="modal-overlay"></div>
         <div class="modal-content">
-            <span class="modal-close">&times;</span>
-            <h3 id="modal-video-title"></h3>
-            <p id="modal-video-description"></p>
+            <div class="modal-header">
+                <h3 class="modal-title"></h3>
+                <button class="modal-close">&times;</button>
+            </div>
             <div class="modal-body">
                 <div id="video-player"></div>
             </div>
         </div>
     </div>
 
+    <!-- Links para redes sociais -->
     <section class="social-links">
         <div class="container">
             <h2 class="section-title">Siga-nos nas Redes Sociais</h2>
             <div class="social-grid">
-                <a href="https://www.youtube.com/@silkmachine" target="_blank" class="social-card youtube">
+                <a href="https://www.youtube.com/@silkmachine/videos" target="_blank" class="social-card youtube">
                     <div class="social-icon">📺</div>
                     <h3>YouTube</h3>
                     <p>Vídeos completos e tutoriais detalhados</p>
@@ -266,3 +183,4 @@ permalink: /videos/index.html
         </div>
     </section>
 </div>
+
