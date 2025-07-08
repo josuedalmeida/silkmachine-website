@@ -5,20 +5,20 @@
             <img src="{{ video.data.custom_thumbnail }}" 
                  alt="{{ video.data.title }}" 
                  loading="lazy">
-        {% elif video.data.platform == "youtube" or video.data.video_url.includes("youtube.com") or video.data.video_url.includes("youtu.be") %}
+        {% elif video.data.platform == "youtube" or "youtube.com" in video.data.video_url or "youtu.be" in video.data.video_url %}
             <!-- Thumbnail do YouTube com melhor qualidade -->
             {% set videoId = video.data.video_url | replace("https://www.youtube.com/shorts/", "") | replace("https://www.youtube.com/watch?v=", "") | replace("https://youtu.be/", "") | replace("?.*", "") | replace("&.*", "") %}
             <img src="https://img.youtube.com/vi/{{ videoId }}/maxresdefault.jpg" 
                  alt="{{ video.data.title }}" 
                  loading="lazy"
                  onerror="this.onerror=null; this.src='https://img.youtube.com/vi/{{ videoId }}/hqdefault.jpg';">
-        {% elif video.data.video_url.includes("tiktok.com") %}
+        {% elif "tiktok.com" in video.data.video_url %}
             <!-- Placeholder para TikTok -->
             <div class="tiktok-thumbnail">
                 <div class="tiktok-icon">🎵</div>
                 <span>TikTok</span>
             </div>
-        {% elif video.data.video_url.includes("instagram.com") %}
+        {% elif "instagram.com" in video.data.video_url %}
             <!-- Placeholder para Instagram -->
             <div class="instagram-thumbnail">
                 <div class="instagram-icon">📸</div>
