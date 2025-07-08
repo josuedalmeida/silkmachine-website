@@ -36,7 +36,7 @@ layout: layouts/base.njk # Volte para este caminho mais simples
             <article>
                 <h1 class="section-title" style="margin-bottom: 1rem;">{{ title }}</h1>
                 <p class="section-subtitle" style="margin-bottom: 2rem;">
-                    Por {{ author }} em {{ date | dateFormat("dd/MM/yyyy") }}
+                    Por {{ author }} em {{ post.data.date | luxonDate("dd/MM/yyyy") }}
                     {% if tags %}
                         {% for tag in tags %}
                             <span style="background-color: #e0e7ff; color: #3b82f6; padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.8em; margin-left: 5px;">{{ tag }}</span>
