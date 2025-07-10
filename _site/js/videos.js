@@ -15,6 +15,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Configurar banner
     setupBanner();
+    
+    // Organizar vídeos por categoria (desabilitado temporariamente)
+    // organizeVideosByCategory();
 });
 
 // Configurar filtros de categoria
@@ -64,8 +67,11 @@ function filterVideosByCategory(category) {
     });
     
     // Atualizar título e contador
-    document.getElementById('current-section-title').textContent = category.charAt(0).toUpperCase() + category.slice(1);
-    document.getElementById('videos-count').textContent = `${visibleCount} vídeos`;
+    const currentSectionTitle = document.getElementById('current-section-title');
+    if (currentSectionTitle) {
+        currentSectionTitle.textContent = category.charAt(0).toUpperCase() + category.slice(1);
+    }
+    updateVideoCount(visibleCount);
 }
 
 // Configurar busca
@@ -98,13 +104,16 @@ function filterVideosBySearch(searchTerm) {
     });
     
     // Atualizar contador
-    document.getElementById('videos-count').textContent = `${visibleCount} vídeos`;
+    updateVideoCount(visibleCount);
 }
 
 // Atualizar contador de vídeos
-function updateVideoCount() {
-    const videoCards = document.querySelectorAll('.video-card');
-    document.getElementById('videos-count').textContent = `${videoCards.length} vídeos`;
+function updateVideoCount(count) {
+    const videosCountElement = document.getElementById('videos-count');
+    if (videosCountElement) {
+        const videoCards = count !== undefined ? count : document.querySelectorAll('.video-card').length;
+        videosCountElement.textContent = `${videoCards} vídeos`;
+    }
 }
 
 // Abrir modal do vídeo
@@ -113,9 +122,15 @@ function openVideoModal(videoUrl, videoTitle) {
     const playerContainer = document.getElementById('video-player');
     const modalTitle = document.querySelector('.modal-title');
     
-    if (!modal || !playerContainer) return;
+    if (!modal || !playerContainer) {
+        console.error('Modal ou player container não encontrado');
+        return;
+    }
     
     console.log('Abrindo vídeo:', videoTitle, 'URL:', videoUrl);
+    
+    // Limpar URL
+    videoUrl = videoUrl.trim();
     
     // Detectar plataforma e processar adequadamente
     if (videoUrl.includes('youtube.com') || videoUrl.includes('youtu.be')) {
@@ -123,7 +138,7 @@ function openVideoModal(videoUrl, videoTitle) {
         const videoId = extractYouTubeId(videoUrl);
         
         if (videoId) {
-            console.log('YouTube ID encontrado:', videoId);
+            console.log('Abrindo vídeo:', videoTitle, 'ID:', videoId);
             
             // Parâmetros do YouTube otimizados
             const embedUrl = `https://www.youtube.com/embed/${videoId}?` +
@@ -148,32 +163,84 @@ function openVideoModal(videoUrl, videoTitle) {
                 </iframe>
             `;
         } else {
-            console.error('ID do YouTube não encontrado para:', videoUrl);
+            console.error('ID do vídeo não encontrado para:', videoUrl);
             showVideoError(playerContainer, videoUrl, 'YouTube');
         }
     } else if (videoUrl.includes('tiktok.com')) {
-        // TikTok - não pode ser embedado, mostrar link direto
+        // TikTok - embed direto
         console.log('Vídeo do TikTok detectado:', videoUrl);
-        playerContainer.innerHTML = `
-            <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; background: linear-gradient(135deg, #ff0050, #00f2ea); color: #fff; border-radius: 8px; text-align: center; padding: 20px;">
-                <div style="font-size: 48px; margin-bottom: 20px;">🎵</div>
-                <h3 style="margin: 0 0 10px 0; font-size: 18px;">Vídeo do TikTok</h3>
-                <p style="margin: 0 0 20px 0; opacity: 0.9;">Este vídeo está disponível no TikTok</p>
-                <a href="${videoUrl}" target="_blank" style="background: rgba(255,255,255,0.2); color: #fff; padding: 12px 24px; border-radius: 25px; text-decoration: none; font-weight: bold; border: 2px solid rgba(255,255,255,0.3); transition: all 0.3s ease;">
-                    🚀 Assistir no TikTok
-                </a>
-            </div>
-        `;
+        
+        // Tentar extrair ID do TikTok
+        const tiktokIdMatch = videoUrl.match(/video\/(\d+)/);
+        const tiktokId = tiktokIdMatch ? tiktokIdMatch[1] : null;
+        
+        if (tiktokId) {
+            console.log('TikTok ID encontrado:', tiktokId);
+            
+            // Embed direto do TikTok
+            playerContainer.innerHTML = `
+                <blockquote 
+                    class="tiktok-embed" 
+                    cite="${videoUrl}" 
+                    data-video-id="${tiktokId}" 
+                    style="max-width: 605px; min-width: 325px; margin: 0 auto; border-radius: 8px; overflow: hidden;">
+                    <section>
+                        <a target="_blank" title="@silkmachine" href="https://www.tiktok.com/@silkmachine">@silkmachine</a>
+                    </section>
+                </blockquote>
+                <script async src="https://www.tiktok.com/embed.js"></script>
+            `;
+            
+            // Fallback caso o embed não carregue
+            setTimeout(() => {
+                const tiktokEmbed = playerContainer.querySelector('.tiktok-embed');
+                if (tiktokEmbed && tiktokEmbed.children.length <= 1) {
+                    playerContainer.innerHTML = `
+                        <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; background: linear-gradient(135deg, #ff0050, #00f2ea); color: #fff; border-radius: 8px; text-align: center; padding: 20px;">
+                            <div style="font-size: 48px; margin-bottom: 20px;">🎵</div>
+                            <h3 style="margin: 0 0 10px 0; font-size: 18px;">Vídeo do TikTok</h3>
+                            <p style="margin: 0 0 20px 0; opacity: 0.9;">Carregando vídeo...</p>
+                            <p style="margin: 0 0 20px 0; font-size: 12px; opacity: 0.7;">ID: ${tiktokId}</p>
+                            <a href="${videoUrl}" target="_blank" style="background: rgba(255,255,255,0.2); color: #fff; padding: 12px 24px; border-radius: 25px; text-decoration: none; font-weight: bold; border: 2px solid rgba(255,255,255,0.3); transition: all 0.3s ease;">
+                                🚀 Assistir no TikTok
+                            </a>
+                        </div>
+                    `;
+                }
+            }, 3000);
+        } else {
+            console.error('ID do TikTok não encontrado para:', videoUrl);
+            showVideoError(playerContainer, videoUrl, 'TikTok');
+        }
     } else if (videoUrl.includes('instagram.com')) {
-        // Instagram - não pode ser embedado facilmente, mostrar link direto
+        // Instagram - extrair ID se possível
         console.log('Vídeo do Instagram detectado:', videoUrl);
+        
+        // Tentar extrair ID do Instagram
+        const instaIdMatch = videoUrl.match(/(?:reel|p)\/([A-Za-z0-9_-]+)/);
+        const instaId = instaIdMatch ? instaIdMatch[1] : null;
+        
         playerContainer.innerHTML = `
             <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; background: linear-gradient(135deg, #833ab4, #fd1d1d, #fcb045); color: #fff; border-radius: 8px; text-align: center; padding: 20px;">
                 <div style="font-size: 48px; margin-bottom: 20px;">📸</div>
                 <h3 style="margin: 0 0 10px 0; font-size: 18px;">Vídeo do Instagram</h3>
                 <p style="margin: 0 0 20px 0; opacity: 0.9;">Este vídeo está disponível no Instagram</p>
+                ${instaId ? `<p style="margin: 0 0 20px 0; font-size: 12px; opacity: 0.7;">ID: ${instaId}</p>` : ''}
                 <a href="${videoUrl}" target="_blank" style="background: rgba(255,255,255,0.2); color: #fff; padding: 12px 24px; border-radius: 25px; text-decoration: none; font-weight: bold; border: 2px solid rgba(255,255,255,0.3); transition: all 0.3s ease;">
                     🚀 Assistir no Instagram
+                </a>
+            </div>
+        `;
+    } else if (videoUrl.includes('facebook.com')) {
+        // Facebook
+        console.log('Vídeo do Facebook detectado:', videoUrl);
+        playerContainer.innerHTML = `
+            <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; background: linear-gradient(135deg, #1877f2, #42a5f5); color: #fff; border-radius: 8px; text-align: center; padding: 20px;">
+                <div style="font-size: 48px; margin-bottom: 20px;">📘</div>
+                <h3 style="margin: 0 0 10px 0; font-size: 18px;">Vídeo do Facebook</h3>
+                <p style="margin: 0 0 20px 0; opacity: 0.9;">Este vídeo está disponível no Facebook</p>
+                <a href="${videoUrl}" target="_blank" style="background: rgba(255,255,255,0.2); color: #fff; padding: 12px 24px; border-radius: 25px; text-decoration: none; font-weight: bold; border: 2px solid rgba(255,255,255,0.3); transition: all 0.3s ease;">
+                    🚀 Assistir no Facebook
                 </a>
             </div>
         `;
@@ -222,25 +289,39 @@ function closeVideoModal() {
 function extractYouTubeId(url) {
     if (!url) return null;
     
+    console.log('Tentando extrair ID do YouTube da URL:', url);
+    
+    // Limpar a URL removendo espaços e caracteres especiais
+    url = url.trim();
+    
     // Regex melhorado para capturar diferentes formatos de URL do YouTube
     const patterns = [
-        /(?:youtube\.com\/watch\?v=)([^&\n?#]+)/,           // youtube.com/watch?v=ID
-        /(?:youtube\.com\/embed\/)([^&\n?#]+)/,             // youtube.com/embed/ID
-        /(?:youtube\.com\/v\/)([^&\n?#]+)/,                 // youtube.com/v/ID
-        /(?:youtu\.be\/)([^&\n?#]+)/,                       // youtu.be/ID
-        /(?:youtube\.com\/shorts\/)([^&\n?#]+)/,            // youtube.com/shorts/ID
-        /(?:youtube\.com\/.*[?&]v=)([^&\n?#]+)/             // Outros formatos com v=
+        /(?:youtube\.com\/watch\?v=)([a-zA-Z0-9_-]{11})/,           // youtube.com/watch?v=ID
+        /(?:youtube\.com\/embed\/)([a-zA-Z0-9_-]{11})/,             // youtube.com/embed/ID
+        /(?:youtube\.com\/v\/)([a-zA-Z0-9_-]{11})/,                 // youtube.com/v/ID
+        /(?:youtu\.be\/)([a-zA-Z0-9_-]{11})/,                       // youtu.be/ID
+        /(?:youtube\.com\/shorts\/)([a-zA-Z0-9_-]{11})/,            // youtube.com/shorts/ID
+        /(?:youtube\.com\/.*[?&]v=)([a-zA-Z0-9_-]{11})/,            // Outros formatos com v=
+        /([a-zA-Z0-9_-]{11})$/                                      // Apenas o ID (fallback)
     ];
     
-    for (const pattern of patterns) {
+    for (let i = 0; i < patterns.length; i++) {
+        const pattern = patterns[i];
         const match = url.match(pattern);
         if (match && match[1]) {
-            console.log('YouTube ID encontrado:', match[1], 'para URL:', url);
+            console.log(`YouTube ID encontrado com padrão ${i + 1}:`, match[1], 'para URL:', url);
             return match[1];
         }
     }
     
-    console.log('YouTube ID não encontrado para URL:', url);
+    // Tentar extrair ID de URLs malformadas ou incompletas
+    const possibleId = url.replace(/.*[\/=]/, '').replace(/[?&].*/, '');
+    if (possibleId && possibleId.length === 11 && /^[a-zA-Z0-9_-]+$/.test(possibleId)) {
+        console.log('YouTube ID extraído como fallback:', possibleId, 'para URL:', url);
+        return possibleId;
+    }
+    
+    console.error('ID do vídeo não encontrado para:', url);
     return null;
 }
 
@@ -260,5 +341,154 @@ function setupBanner() {
             banner.style.display = 'none';
         }
     }
+}
+
+
+
+// ===== ORGANIZAÇÃO POR CATEGORIAS =====
+
+// Organizar vídeos por categoria em seções
+function organizeVideosByCategory() {
+    const videosContainer = document.querySelector('.videos-grid');
+    const videoCards = Array.from(document.querySelectorAll('.video-card'));
+    
+    if (!videosContainer || videoCards.length === 0) return;
+    
+    // Agrupar vídeos por categoria
+    const categories = {
+        'destaque': { name: '⭐ Em Destaque', videos: [] },
+        'demonstracoes': { name: '🎬 Demonstrações', videos: [] },
+        'depoimentos': { name: '💬 Depoimentos', videos: [] },
+        'treinamentos': { name: '🎓 Treinamentos', videos: [] },
+        'dicas-negocio': { name: '💡 Dicas de Negócio', videos: [] },
+        'novidades': { name: '📢 Novidades', videos: [] },
+        'tutoriais': { name: '📚 Tutoriais', videos: [] }
+    };
+    
+    // Separar vídeos em destaque primeiro
+    videoCards.forEach(card => {
+        const category = card.dataset.category;
+        const isFeatured = card.querySelector('.video-badge');
+        
+        if (isFeatured) {
+            categories.destaque.videos.push(card);
+        } else if (categories[category]) {
+            categories[category].videos.push(card);
+        }
+    });
+    
+    // Limpar container
+    videosContainer.innerHTML = '';
+    
+    // Criar seções para cada categoria com vídeos
+    Object.keys(categories).forEach(categoryKey => {
+        const category = categories[categoryKey];
+        if (category.videos.length > 0) {
+            createCategorySection(videosContainer, category.name, category.videos, categoryKey);
+        }
+    });
+}
+
+// Criar seção de categoria
+function createCategorySection(container, categoryName, videos, categoryKey) {
+    // Criar seção da categoria
+    const section = document.createElement('div');
+    section.className = 'category-section';
+    section.dataset.category = categoryKey;
+    
+    // Cabeçalho da categoria
+    const header = document.createElement('div');
+    header.className = 'category-header';
+    header.innerHTML = `
+        <h3 class="category-title">${categoryName}</h3>
+        <span class="category-count">${videos.length} vídeo${videos.length > 1 ? 's' : ''}</span>
+    `;
+    
+    // Grid de vídeos da categoria
+    const grid = document.createElement('div');
+    grid.className = 'category-grid';
+    
+    // Adicionar vídeos à grid
+    videos.forEach(video => {
+        grid.appendChild(video);
+    });
+    
+    // Montar seção
+    section.appendChild(header);
+    section.appendChild(grid);
+    container.appendChild(section);
+}
+
+// Atualizar função de filtro para trabalhar com categorias
+function filterVideosByCategory(category) {
+    const categorySections = document.querySelectorAll('.category-section');
+    let visibleCount = 0;
+    
+    categorySections.forEach(section => {
+        const sectionCategory = section.dataset.category;
+        const videos = section.querySelectorAll('.video-card');
+        
+        if (category.includes('início') || category.includes('todos')) {
+            section.style.display = 'block';
+            visibleCount += videos.length;
+        } else if (category.includes('destaque') && sectionCategory === 'destaque') {
+            section.style.display = 'block';
+            visibleCount += videos.length;
+        } else if (category.includes('demonstrações') && sectionCategory === 'demonstracoes') {
+            section.style.display = 'block';
+            visibleCount += videos.length;
+        } else if (category.includes('depoimentos') && sectionCategory === 'depoimentos') {
+            section.style.display = 'block';
+            visibleCount += videos.length;
+        } else if (category.includes('treinamentos') && sectionCategory === 'treinamentos') {
+            section.style.display = 'block';
+            visibleCount += videos.length;
+        } else if (category.includes('dicas') && sectionCategory === 'dicas-negocio') {
+            section.style.display = 'block';
+            visibleCount += videos.length;
+        } else {
+            section.style.display = 'none';
+        }
+    });
+    
+    // Atualizar contador
+    updateVideoCount(visibleCount);
+}
+
+// Atualizar função de busca para trabalhar com categorias
+function filterVideosBySearch(searchTerm) {
+    const categorySections = document.querySelectorAll('.category-section');
+    let visibleCount = 0;
+    
+    categorySections.forEach(section => {
+        const videos = section.querySelectorAll('.video-card');
+        let sectionHasVisibleVideos = false;
+        
+        videos.forEach(card => {
+            const title = card.dataset.title || '';
+            const description = card.dataset.description || '';
+            const tags = card.dataset.tags || '';
+            
+            if (title.includes(searchTerm) || description.includes(searchTerm) || tags.includes(searchTerm)) {
+                card.style.display = 'block';
+                visibleCount++;
+                sectionHasVisibleVideos = true;
+            } else {
+                card.style.display = 'none';
+            }
+        });
+        
+        // Mostrar/ocultar seção baseado se tem vídeos visíveis
+        section.style.display = sectionHasVisibleVideos ? 'block' : 'none';
+        
+        // Atualizar contador da categoria
+        const categoryCount = section.querySelector('.category-count');
+        const visibleVideosInSection = section.querySelectorAll('.video-card[style*="block"]').length;
+        if (categoryCount) {
+            categoryCount.textContent = `${visibleVideosInSection} vídeo${visibleVideosInSection !== 1 ? 's' : ''}`;
+        }
+    });
+    
+    updateVideoCount(visibleCount);
 }
 

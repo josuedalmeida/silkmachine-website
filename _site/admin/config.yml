@@ -26,7 +26,8 @@ collections:
     fields:
       - { label: "Título", name: "title", widget: "string" }
       - { label: "Descrição", name: "description", widget: "text" }
-      - { label: "URL do Vídeo", name: "video_url", widget: "string", hint: "URL completa do YouTube" }
+      - { label: "URL do Vídeo", name: "video_url", widget: "string", hint: "URL completa do YouTube, TikTok, Instagram ou Facebook" }
+      - { label: "Capa Personalizada", name: "custom_thumbnail", widget: "image", required: false, hint: "Upload de uma imagem personalizada para a capa do vídeo (opcional). Se não fornecida, será usada a thumbnail automática da plataforma." }
       - { label: "Categoria", name: "category", widget: "select", options: ["demonstracoes", "depoimentos", "treinamentos", "dicas-negocio", "tutoriais", "novidades"] }
       - { label: "Plataforma", name: "platform", widget: "select", options: ["youtube", "instagram", "tiktok", "facebook"], default: "youtube" }
       - { label: "Duração (segundos)", name: "duration", widget: "number", default: 60 }

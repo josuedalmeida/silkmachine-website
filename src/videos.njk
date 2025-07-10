@@ -31,112 +31,15 @@ permalink: /videos/index.html
         </div>
     </div>
 
-    <!-- Vídeos em destaque -->
-    <section class="featured-videos">
+    <!-- Todos os Vídeos -->
+    <section class="all-videos">
         <div class="container">
-            <h2 class="section-title">Vídeos em Destaque</h2>
-            <div class="featured-carousel">
-                {% set featuredVideos = collections.videos | where("data.featured", true) | reverse %}
-                {% for video in featuredVideos %}
-                <div class="featured-video-card" data-category="{{ video.data.category }}">
-                    <div class="video-thumbnail">
-                        {% if video.data.platform == "youtube" %}
-                            {% set videoId = video.data.video_url | replace("https://www.youtube.com/shorts/", "") | replace("https://www.youtube.com/watch?v=", "") | replace("https://youtu.be/", "") | replace("?.*", "") %}
-                            <img src="https://img.youtube.com/vi/{{ videoId }}/maxresdefault.jpg" 
-                                 alt="{{ video.data.title }}" 
-                                 onerror="this.src='https://img.youtube.com/vi/{{ videoId }}/hqdefault.jpg'">
-                        {% endif %}
-                        <div class="play-overlay">
-                            <div class="play-button">▶</div>
-                        </div>
-                        <div class="video-duration">
-                            {% if video.data.duration %}
-                                {{ (video.data.duration / 60) | round }}:{{ (video.data.duration % 60) | string | padStart(2, "0") }}
-                            {% endif %}
-                        </div>
-                    </div>
-                    <div class="video-info">
-                        <h3 class="video-title">{{ video.data.title }}</h3>
-                        <p class="video-description">{{ video.data.description }}</p>
-                        <div class="video-meta">
-                            <span class="video-category">{{ video.data.category | replace("-", " ") | title }}</span>
-                            <span class="video-date">{{ video.data.date | date("DD/MM/YYYY") }}</span>
-                        </div>
-                        <div class="video-tags">
-                            {% for tag in video.data.tags %}
-                                <span class="tag">#{{ tag }}</span>
-                            {% endfor %}
-                        </div>
-                    </div>
-                    <button class="watch-btn" data-video-url="{{ video.data.video_url }}" data-video-title="{{ video.data.title }}">
-                        Assistir Vídeo
-                    </button>
-                </div>
+            <h2 class="section-title">Todos os Vídeos ({{ collections.videos.length }})</h2>
+            <div class="videos-grid">
+                {% for video in collections.videos %}
+                {% include "partials/video-card.njk" %}
                 {% endfor %}
             </div>
-        </div>
-    </section>
-
-    <!-- Seções por categoria -->
-    <section class="category-sections">
-        <div class="container">
-            
-            <!-- Demonstrações -->
-            <div class="category-section" data-category="demonstracoes">
-                <h2 class="section-title">
-                    <span class="category-icon">🎬</span>
-                    Demonstrações
-                </h2>
-                <div class="videos-carousel">
-                    {% set demonstracoes = collections.videos | where("data.category", "demonstracoes") | reverse %}
-                    {% for video in demonstracoes %}
-                        {% include "partials/video-card.njk" %}
-                    {% endfor %}
-                </div>
-            </div>
-
-            <!-- Depoimentos -->
-            <div class="category-section" data-category="depoimentos">
-                <h2 class="section-title">
-                    <span class="category-icon">💬</span>
-                    Depoimentos
-                </h2>
-                <div class="videos-carousel">
-                    {% set depoimentos = collections.videos | where("data.category", "depoimentos") | reverse %}
-                    {% for video in depoimentos %}
-                        {% include "partials/video-card.njk" %}
-                    {% endfor %}
-                </div>
-            </div>
-
-            <!-- Treinamentos -->
-            <div class="category-section" data-category="treinamentos">
-                <h2 class="section-title">
-                    <span class="category-icon">🎓</span>
-                    Treinamentos
-                </h2>
-                <div class="videos-carousel">
-                    {% set treinamentos = collections.videos | where("data.category", "treinamentos") | reverse %}
-                    {% for video in treinamentos %}
-                        {% include "partials/video-card.njk" %}
-                    {% endfor %}
-                </div>
-            </div>
-
-            <!-- Dicas de Negócio -->
-            <div class="category-section" data-category="dicas-negocio">
-                <h2 class="section-title">
-                    <span class="category-icon">💡</span>
-                    Dicas de Negócio
-                </h2>
-                <div class="videos-carousel">
-                    {% set dicasNegocio = collections.videos | where("data.category", "dicas-negocio") | reverse %}
-                    {% for video in dicasNegocio %}
-                        {% include "partials/video-card.njk" %}
-                    {% endfor %}
-                </div>
-            </div>
-
         </div>
     </section>
 
