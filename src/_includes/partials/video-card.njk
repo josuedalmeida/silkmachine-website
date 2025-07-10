@@ -7,7 +7,7 @@
                  loading="lazy">
         {% elif video.data.platform == "youtube" or "youtube.com" in video.data.video_url or "youtu.be" in video.data.video_url %}
             <!-- Thumbnail do YouTube com melhor qualidade -->
-            {% set videoId = video.data.video_url | replace("https://www.youtube.com/shorts/", "") | replace("https://www.youtube.com/watch?v=", "") | replace("https://youtu.be/", "") | replace("?.*", "") | replace("&.*", "") %}
+            {% set videoId = video.data.video_url | replace("https://www.youtube.com/shorts/", "") | replace("https://www.youtube.com/watch?v=", "") | replace("https://youtu.be/", "") | replace("\\?.*", "") | replace("&.*", "") %}
             <img src="https://img.youtube.com/vi/{{ videoId }}/maxresdefault.jpg" 
                  alt="{{ video.data.title }}" 
                  loading="lazy"
