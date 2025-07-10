@@ -16,8 +16,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // Configurar banner
     setupBanner();
     
-    // Organizar vídeos por categoria
-    organizeVideosByCategory();
+    // Organizar vídeos por categoria (desabilitado temporariamente)
+    // organizeVideosByCategory();
 });
 
 // Configurar filtros de categoria
@@ -67,8 +67,11 @@ function filterVideosByCategory(category) {
     });
     
     // Atualizar título e contador
-    document.getElementById('current-section-title').textContent = category.charAt(0).toUpperCase() + category.slice(1);
-    document.getElementById('videos-count').textContent = `${visibleCount} vídeos`;
+    const currentSectionTitle = document.getElementById('current-section-title');
+    if (currentSectionTitle) {
+        currentSectionTitle.textContent = category.charAt(0).toUpperCase() + category.slice(1);
+    }
+    updateVideoCount(visibleCount);
 }
 
 // Configurar busca
@@ -101,13 +104,16 @@ function filterVideosBySearch(searchTerm) {
     });
     
     // Atualizar contador
-    document.getElementById('videos-count').textContent = `${visibleCount} vídeos`;
+    updateVideoCount(visibleCount);
 }
 
 // Atualizar contador de vídeos
-function updateVideoCount() {
-    const videoCards = document.querySelectorAll('.video-card');
-    document.getElementById('videos-count').textContent = `${videoCards.length} vídeos`;
+function updateVideoCount(count) {
+    const videosCountElement = document.getElementById('videos-count');
+    if (videosCountElement) {
+        const videoCards = count !== undefined ? count : document.querySelectorAll('.video-card').length;
+        videosCountElement.textContent = `${videoCards} vídeos`;
+    }
 }
 
 // Abrir modal do vídeo
