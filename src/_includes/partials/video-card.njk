@@ -1,4 +1,4 @@
-<div class="video-card" data-category="{{ video.data.category }}" data-tags="{{ video.data.tags | join(',') }}" data-title="{{ video.data.title | lower }}" data-description="{{ video.data.description | lower }}">
+<div class="video-card" data-category="{{ video.data.category }}" data-tags="{{ (video.data.tags or []) | join(',') }}" data-title="{{ video.data.title | lower }}" data-description="{{ video.data.description | lower }}">
     <div class="video-thumbnail">
         {% if video.data.custom_thumbnail %}
             <!-- Thumbnail personalizada -->
