@@ -1,0 +1,63 @@
+<div class="video-card-small" data-category="{{ video.data.category }}" data-tags="{{ (video.data.tags or []) | join(',') }}" data-title="{{ video.data.title | lower }}" data-description="{{ video.data.description | lower }}">
+    <div class="video-thumbnail-small">
+        {% if video.data.custom_thumbnail %}
+            <!-- Thumbnail personalizada -->
+            <img src="{{ video.data.custom_thumbnail }}" 
+                 alt="{{ video.data.title }}" 
+                 loading="lazy">
+        {% elif video.data.platform == "youtube" or "youtube.com" in video.data.video_url or "youtu.be" in video.data.video_url %}
+            <!-- Thumbnail do YouTube com melhor qualidade -->
+            {% set videoId = video.data.video_url | replace("https://www.youtube.com/shorts/", "") | replace("https://www.youtube.com/watch?v=", "") | replace("https://youtu.be/", "") | replace("\\?.*", "") | replace("&.*", "") %}
+            <img src="https://img.youtube.com/vi/{{ videoId }}/maxresdefault.jpg" 
+                 alt="{{ video.data.title }}" 
+                 loading="lazy"
+                 onerror="this.onerror=null; this.src='https://img.youtube.com/vi/{{ videoId }}/hqdefault.jpg';">
+        {% elif "tiktok.com" in video.data.video_url %}
+            <!-- Placeholder para TikTok -->
+            <div class="tiktok-thumbnail-small">
+                <div class="tiktok-icon">🎵</div>
+                <span>TikTok</span>
+            </div>
+        {% elif "instagram.com" in video.data.video_url %}
+            <!-- Placeholder para Instagram -->
+            <div class="instagram-thumbnail-small">
+                <div class="instagram-icon">📸</div>
+                <span>Instagram</span>
+            </div>
+        {% else %}
+            <!-- Placeholder genérico -->
+            <div class="generic-thumbnail-small">
+                <div class="generic-icon">🎬</div>
+                <span>Vídeo</span>
+            </div>
+        {% endif %}
+        
+        <div class="play-overlay-small">
+            <div class="play-button-small">▶</div>
+        </div>
+        
+        {% if video.data.duration %}
+        <div class="video-duration-small">
+            {% if video.data.duration >= 60 %}
+                {{ (video.data.duration / 60) | round }}:{{ (video.data.duration % 60) | string | padStart(2, "0") }}
+            {% else %}
+                {{ video.data.duration }}s
+            {% endif %}
+        </div>
+        {% endif %}
+        
+        {% if video.data.featured %}
+        <div class="video-badge-small">⭐</div>
+        {% endif %}
+    </div>
+    
+    <div class="video-info-small">
+        <h4 class="video-title-small">{{ video.data.title }}</h4>
+        <p class="video-description-small">{{ video.data.description | truncate(60) }}</p>
+    </div>
+    
+    <button class="watch-btn-small" onclick="openVideoModal('{{ video.data.video_url }}', '{{ video.data.title }}')">
+        <span class="btn-icon-small">▶</span>
+    </button>
+</div>
+
