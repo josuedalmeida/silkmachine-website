@@ -32,157 +32,167 @@ permalink: /videos/index.html
     </div>
 
     <!-- Banner de Destaque -->
-    {% set featuredVideo = collections.videos | where("data.featured", true) | first %}
-    {% if featuredVideo %}
-    <section class="hero-banner">
-        <div class="container">
-            <div class="banner-content">
-                <div class="banner-video">
-                    <div class="video-thumbnail-large">
-                        {% if featuredVideo.data.custom_thumbnail %}
-                            <img src="{{ featuredVideo.data.custom_thumbnail }}" alt="{{ featuredVideo.data.title }}">
-                        {% elif featuredVideo.data.platform == "youtube" or "youtube.com" in featuredVideo.data.video_url %}
-                            {% set videoId = featuredVideo.data.video_url | replace("https://www.youtube.com/shorts/", "") | replace("https://www.youtube.com/watch?v=", "") | replace("https://youtu.be/", "") | replace("\\?.*", "") | replace("&.*", "") %}
-                            <img src="https://img.youtube.com/vi/{{ videoId }}/maxresdefault.jpg" 
-                                 alt="{{ featuredVideo.data.title }}"
-                                 onerror="this.src='https://img.youtube.com/vi/{{ videoId }}/hqdefault.jpg'">
-                        {% endif %}
-                        <div class="play-overlay-large">
-                            <div class="play-button-large">▶</div>
+    {% for video in collections.videos %}
+        {% if video.data.featured %}
+        <section class="hero-banner">
+            <div class="container">
+                <div class="banner-content">
+                    <div class="banner-video">
+                        <div class="video-thumbnail-large">
+                            {% if video.data.custom_thumbnail %}
+                                <img src="{{ video.data.custom_thumbnail }}" alt="{{ video.data.title }}">
+                            {% elif video.data.platform == "youtube" or "youtube.com" in video.data.video_url %}
+                                {% set videoId = video.data.video_url | replace("https://www.youtube.com/shorts/", "") | replace("https://www.youtube.com/watch?v=", "") | replace("https://youtu.be/", "") | replace("\\?.*", "") | replace("&.*", "") %}
+                                <img src="https://img.youtube.com/vi/{{ videoId }}/maxresdefault.jpg" 
+                                     alt="{{ video.data.title }}"
+                                     onerror="this.src='https://img.youtube.com/vi/{{ videoId }}/hqdefault.jpg'">
+                            {% endif %}
+                            <div class="play-overlay-large">
+                                <div class="play-button-large">▶</div>
+                            </div>
+                            <div class="video-badge-large">⭐ Em Destaque</div>
                         </div>
-                        <div class="video-badge-large">⭐ Em Destaque</div>
                     </div>
-                </div>
-                <div class="banner-info">
-                    <h2 class="banner-title">{{ featuredVideo.data.title }}</h2>
-                    <p class="banner-description">{{ featuredVideo.data.description }}</p>
-                    <div class="banner-meta">
-                        <span class="banner-category">
-                            {% if featuredVideo.data.category == "demonstracoes" %}🎬 Demonstrações
-                            {% elif featuredVideo.data.category == "depoimentos" %}💬 Depoimentos
-                            {% elif featuredVideo.data.category == "treinamentos" %}🎓 Treinamentos
-                            {% elif featuredVideo.data.category == "dicas-negocio" %}💡 Dicas de Negócio
-                            {% elif featuredVideo.data.category == "novidades" %}📢 Novidades
-                            {% else %}{{ featuredVideo.data.category | replace("-", " ") | title }}
+                    <div class="banner-info">
+                        <h2 class="banner-title">{{ video.data.title }}</h2>
+                        <p class="banner-description">{{ video.data.description }}</p>
+                        <div class="banner-meta">
+                            <span class="banner-category">
+                                {% if video.data.category == "demonstracoes" %}🎬 Demonstrações
+                                {% elif video.data.category == "depoimentos" %}💬 Depoimentos
+                                {% elif video.data.category == "treinamentos" %}🎓 Treinamentos
+                                {% elif video.data.category == "dicas-negocio" %}💡 Dicas de Negócio
+                                {% elif video.data.category == "novidades" %}📢 Novidades
+                                {% else %}{{ video.data.category | replace("-", " ") | title }}
+                                {% endif %}
+                            </span>
+                            {% if video.data.duration %}
+                            <span class="banner-duration">
+                                {% if video.data.duration >= 60 %}
+                                    {{ (video.data.duration / 60) | round }}:{{ (video.data.duration % 60) | string | padStart(2, "0") }}
+                                {% else %}
+                                    {{ video.data.duration }}s
+                                {% endif %}
+                            </span>
                             {% endif %}
-                        </span>
-                        {% if featuredVideo.data.duration %}
-                        <span class="banner-duration">
-                            {% if featuredVideo.data.duration >= 60 %}
-                                {{ (featuredVideo.data.duration / 60) | round }}:{{ (featuredVideo.data.duration % 60) | string | padStart(2, "0") }}
-                            {% else %}
-                                {{ featuredVideo.data.duration }}s
-                            {% endif %}
-                        </span>
-                        {% endif %}
+                        </div>
+                        <button class="watch-btn-large" onclick="openVideoModal('{{ video.data.video_url }}', '{{ video.data.title }}')">
+                            <span class="btn-icon">▶</span>
+                            Assistir Agora
+                        </button>
                     </div>
-                    <button class="watch-btn-large" onclick="openVideoModal('{{ featuredVideo.data.video_url }}', '{{ featuredVideo.data.title }}')">
-                        <span class="btn-icon">▶</span>
-                        Assistir Agora
-                    </button>
                 </div>
             </div>
-        </div>
-    </section>
-    {% endif %}
+        </section>
+        {% endif %}
+    {% endfor %}
 
     <!-- Carrosséis por Categoria -->
     <section class="video-carousels">
         <div class="container">
             
             <!-- Demonstrações -->
-            {% set demonstracoes = collections.videos | where("data.category", "demonstracoes") %}
-            {% if demonstracoes.length > 0 %}
-            <div class="carousel-section">
-                <h3 class="carousel-title">🎬 Demonstrações ({{ demonstracoes.length }})</h3>
-                <div class="video-carousel" data-category="demonstracoes">
+            <div class="carousel-section" data-category="demonstracoes">
+                <h3 class="carousel-title">🎬 Demonstrações</h3>
+                <div class="video-carousel">
                     <div class="carousel-track">
-                        {% for video in demonstracoes %}
-                        {% include "partials/video-card-small.njk" %}
+                        {% for video in collections.videos %}
+                            {% if video.data.category == "demonstracoes" %}
+                            {% include "partials/video-card-small.njk" %}
+                            {% endif %}
                         {% endfor %}
                     </div>
                     <button class="carousel-btn carousel-prev" aria-label="Anterior">‹</button>
                     <button class="carousel-btn carousel-next" aria-label="Próximo">›</button>
                 </div>
             </div>
-            {% endif %}
 
             <!-- Depoimentos -->
-            {% set depoimentos = collections.videos | where("data.category", "depoimentos") %}
-            {% if depoimentos.length > 0 %}
-            <div class="carousel-section">
-                <h3 class="carousel-title">💬 Depoimentos ({{ depoimentos.length }})</h3>
-                <div class="video-carousel" data-category="depoimentos">
+            <div class="carousel-section" data-category="depoimentos">
+                <h3 class="carousel-title">💬 Depoimentos</h3>
+                <div class="video-carousel">
                     <div class="carousel-track">
-                        {% for video in depoimentos %}
-                        {% include "partials/video-card-small.njk" %}
+                        {% for video in collections.videos %}
+                            {% if video.data.category == "depoimentos" %}
+                            {% include "partials/video-card-small.njk" %}
+                            {% endif %}
                         {% endfor %}
                     </div>
                     <button class="carousel-btn carousel-prev" aria-label="Anterior">‹</button>
                     <button class="carousel-btn carousel-next" aria-label="Próximo">›</button>
                 </div>
             </div>
-            {% endif %}
 
             <!-- Dicas de Negócio -->
-            {% set dicasNegocio = collections.videos | where("data.category", "dicas-negocio") %}
-            {% if dicasNegocio.length > 0 %}
-            <div class="carousel-section">
-                <h3 class="carousel-title">💡 Dicas de Negócio ({{ dicasNegocio.length }})</h3>
-                <div class="video-carousel" data-category="dicas-negocio">
+            <div class="carousel-section" data-category="dicas-negocio">
+                <h3 class="carousel-title">💡 Dicas de Negócio</h3>
+                <div class="video-carousel">
                     <div class="carousel-track">
-                        {% for video in dicasNegocio %}
-                        {% include "partials/video-card-small.njk" %}
+                        {% for video in collections.videos %}
+                            {% if video.data.category == "dicas-negocio" %}
+                            {% include "partials/video-card-small.njk" %}
+                            {% endif %}
                         {% endfor %}
                     </div>
                     <button class="carousel-btn carousel-prev" aria-label="Anterior">‹</button>
                     <button class="carousel-btn carousel-next" aria-label="Próximo">›</button>
                 </div>
             </div>
-            {% endif %}
 
             <!-- Treinamentos -->
-            {% set treinamentos = collections.videos | where("data.category", "treinamentos") %}
-            {% if treinamentos.length > 0 %}
-            <div class="carousel-section">
-                <h3 class="carousel-title">🎓 Treinamentos ({{ treinamentos.length }})</h3>
-                <div class="video-carousel" data-category="treinamentos">
+            <div class="carousel-section" data-category="treinamentos">
+                <h3 class="carousel-title">🎓 Treinamentos</h3>
+                <div class="video-carousel">
                     <div class="carousel-track">
-                        {% for video in treinamentos %}
-                        {% include "partials/video-card-small.njk" %}
+                        {% for video in collections.videos %}
+                            {% if video.data.category == "treinamentos" %}
+                            {% include "partials/video-card-small.njk" %}
+                            {% endif %}
                         {% endfor %}
                     </div>
                     <button class="carousel-btn carousel-prev" aria-label="Anterior">‹</button>
                     <button class="carousel-btn carousel-next" aria-label="Próximo">›</button>
                 </div>
             </div>
-            {% endif %}
 
             <!-- Tutoriais -->
-            {% set tutoriais = collections.videos | where("data.category", "tutoriais") %}
-            {% if tutoriais.length > 0 %}
-            <div class="carousel-section">
-                <h3 class="carousel-title">📚 Tutoriais ({{ tutoriais.length }})</h3>
-                <div class="video-carousel" data-category="tutoriais">
+            <div class="carousel-section" data-category="tutoriais">
+                <h3 class="carousel-title">📚 Tutoriais</h3>
+                <div class="video-carousel">
                     <div class="carousel-track">
-                        {% for video in tutoriais %}
-                        {% include "partials/video-card-small.njk" %}
+                        {% for video in collections.videos %}
+                            {% if video.data.category == "tutoriais" %}
+                            {% include "partials/video-card-small.njk" %}
+                            {% endif %}
                         {% endfor %}
                     </div>
                     <button class="carousel-btn carousel-prev" aria-label="Anterior">‹</button>
                     <button class="carousel-btn carousel-next" aria-label="Próximo">›</button>
                 </div>
             </div>
-            {% endif %}
 
             <!-- Novidades -->
-            {% set novidades = collections.videos | where("data.category", "novidades") %}
-            {% if novidades.length > 0 %}
-            <div class="carousel-section">
-                <h3 class="carousel-title">📢 Novidades ({{ novidades.length }})</h3>
-                <div class="video-carousel" data-category="novidades">
+            <div class="carousel-section" data-category="novidades">
+                <h3 class="carousel-title">📢 Novidades</h3>
+                <div class="video-carousel">
                     <div class="carousel-track">
-                        {% for video in novidades %}
+                        {% for video in collections.videos %}
+                            {% if video.data.category == "novidades" %}
+                            {% include "partials/video-card-small.njk" %}
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                    <button class="carousel-btn carousel-prev" aria-label="Anterior">‹</button>
+                    <button class="carousel-btn carousel-next" aria-label="Próximo">›</button>
+                </div>
+            </div>
+
+            <!-- Todos os Vídeos (fallback) -->
+            <div class="carousel-section" data-category="all">
+                <h3 class="carousel-title">📺 Todos os Vídeos ({{ collections.videos.length }})</h3>
+                <div class="video-carousel">
+                    <div class="carousel-track">
+                        {% for video in collections.videos %}
                         {% include "partials/video-card-small.njk" %}
                         {% endfor %}
                     </div>
@@ -190,7 +200,6 @@ permalink: /videos/index.html
                     <button class="carousel-btn carousel-next" aria-label="Próximo">›</button>
                 </div>
             </div>
-            {% endif %}
 
         </div>
     </section>
