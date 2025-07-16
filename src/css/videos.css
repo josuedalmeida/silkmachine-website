@@ -674,3 +674,193 @@
     }
 }
 
+
+
+/* ===== MODAL RESPONSIVO ADAPTATIVO ===== */
+
+/* Container base do vídeo */
+.video-container {
+    position: relative;
+    width: 100%;
+    height: 0;
+    overflow: hidden;
+    border-radius: 15px;
+    background: #000;
+}
+
+/* Iframe do vídeo */
+.video-container iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+    border-radius: 15px;
+}
+
+/* Proporção 16:9 (vídeos horizontais) */
+.video-container--16x9 {
+    padding-bottom: 56.25%; /* 9/16 = 0.5625 */
+}
+
+/* Proporção 9:16 (vídeos verticais - mobile) */
+.video-container--9x16 {
+    padding-bottom: 177.78%; /* 16/9 = 1.7778 */
+    max-width: 400px; /* Limita largura em desktop */
+    margin: 0 auto; /* Centraliza */
+}
+
+/* Ajustes do modal para diferentes proporções */
+.video-modal .modal-content {
+    max-width: 90vw;
+    max-height: 90vh;
+    width: auto;
+    height: auto;
+}
+
+/* Modal para vídeos horizontais (16:9) */
+.video-modal--horizontal .modal-content {
+    width: min(90vw, 1200px);
+    max-width: 1200px;
+}
+
+/* Modal para vídeos verticais (9:16) */
+.video-modal--vertical .modal-content {
+    width: min(90vw, 500px);
+    max-width: 500px;
+}
+
+/* Responsividade mobile */
+@media (max-width: 768px) {
+    /* Vídeos horizontais no mobile */
+    .video-container--16x9 {
+        padding-bottom: 56.25%;
+    }
+    
+    /* Vídeos verticais no mobile - ocupam mais espaço */
+    .video-container--9x16 {
+        padding-bottom: 177.78%;
+        max-width: 90vw;
+    }
+    
+    .video-modal--vertical .modal-content {
+        width: 95vw;
+        max-width: 95vw;
+    }
+    
+    .video-modal--horizontal .modal-content {
+        width: 95vw;
+        max-width: 95vw;
+    }
+}
+
+/* Responsividade para telas muito pequenas */
+@media (max-width: 480px) {
+    .video-container--9x16 {
+        padding-bottom: 177.78%;
+        max-width: 100vw;
+    }
+    
+    .video-modal .modal-content {
+        width: 98vw;
+        max-width: 98vw;
+        margin: 1vh auto;
+    }
+    
+    .modal-header {
+        padding: 1rem;
+    }
+    
+    .modal-title {
+        font-size: 1.1rem;
+        line-height: 1.3;
+    }
+}
+
+/* Ajustes para landscape no mobile */
+@media (max-height: 500px) and (orientation: landscape) {
+    .video-modal .modal-content {
+        max-height: 95vh;
+    }
+    
+    .video-container--9x16 {
+        padding-bottom: 56.25%; /* Força 16:9 em landscape */
+        max-width: 80vw;
+    }
+}
+
+/* Estados de carregamento */
+.video-container::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 50px;
+    height: 50px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-top: 3px solid #fff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    z-index: 1;
+}
+
+.video-container.loaded::before {
+    display: none;
+}
+
+@keyframes spin {
+    0% { transform: translate(-50%, -50%) rotate(0deg); }
+    100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* Melhorias no modal body */
+.modal-body {
+    padding: 0;
+    background: #000;
+    border-radius: 0 0 15px 15px;
+}
+
+/* Placeholder para vídeos não suportados */
+.video-placeholder {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #1a1a2e, #16213e);
+    border-radius: 15px;
+    color: white;
+    text-align: center;
+    padding: 2rem;
+}
+
+.video-placeholder h3 {
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+}
+
+.video-placeholder p {
+    margin-bottom: 2rem;
+    opacity: 0.8;
+}
+
+.video-placeholder .btn {
+    background: linear-gradient(45deg, #00d4ff, #ff6b6b);
+    color: white;
+    padding: 1rem 2rem;
+    border-radius: 25px;
+    text-decoration: none;
+    font-weight: 600;
+    display: inline-block;
+    transition: transform 0.3s ease;
+}
+
+.video-placeholder .btn:hover {
+    transform: translateY(-2px);
+}
+
